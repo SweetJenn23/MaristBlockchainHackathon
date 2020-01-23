@@ -133,7 +133,7 @@ Next, we will begin working as if we were an administrator for MagnetoCorp who w
 
 Part II
 
-From the terminal, change to the following folder:
+6. From the terminal, change to the following folder:
     cd ../commercial-paper/organization/magnetocorp/configuration/cli/
 The full path should now be showing as:
 
@@ -153,16 +153,68 @@ set-title(){
   PS1=${ORIG}${TITLE}
 }
 
-After that, let's reload our environment by issuing the command source $HOME/.bashrc
+7. After that, let's reload our environment by issuing the command source $HOME/.bashrc
 
 ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/configuration/cli$ source $HOME/.bashrc
 
 And let's give our terminal a name MagnetoCorp:
 ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/configuration/cli$ set-title MagnetoCorp
 
+8. The Fabric commands we need to use are in the fabric-tools docker image, so let’s start it running by issuing this docker-compose command to start the container:
+docker-compose -f docker-compose.yml up -d cliMagnetoCorp
+
+ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/configuration/cli$ docker-compose -f docker-compose.yml up -d cliMagnetoCorp
+
+If we run the docker ps command again we should see that the new container is running. 
+
+ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/configuration/cli$ docker ps
+CONTAINER ID        IMAGE                              COMMAND                  CREATED             STATUS              PORTS                                            NAMES
+ef8200f4e3ca        hyperledger/fabric-tools:1.4.1     "/bin/bash"              46 seconds ago      Up 41 seconds                                                        cliMagnetoCorp
+f3e4a0c597fd        hyperledger/fabric-peer:1.4.1      "peer node start"        About an hour ago   Up About an hour    0.0.0.0:7051->7051/tcp, 0.0.0.0:7053->7053/tcp   peer0.org1.example.com
+b6e69ff6af06        hyperledger/fabric-orderer:1.4.1   "orderer"                About an hour ago   Up About an hour    0.0.0.0:7050->7050/tcp                           orderer.example.com
+30d71804d58d        hyperledger/fabric-ca:1.4.1        "sh -c 'fabric-ca-se…"   About an hour ago   Up About an hour    0.0.0.0:7054->7054/tcp                           ca.example.com
+8508faada7f5        hyperledger/fabric-couchdb         "tini -- /docker-ent…"   About an hour ago   Up About an hour    4369/tcp, 9100/tcp, 0.0.0.0:5984->5984/tcp       couchdb
+
+Both of these containers have also been added to the net_basic network as well and you can run the docker network inspect net_basic command again if you want to see this for yourself.
+Next we will begin to deploy the PaperNet smart contract.
+
+9. Change directory to the magnetocorp/contract folder:
+      cd ../../contract/
+   The directory should be: ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/contract$    
+   
+10. Let's take a look at the smart contract papercontract.js code, you can do it either from a terminal, or from the browser, follow the link:
+https://github.com/hyperledger/fabric-samples/blob/release-1.4/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js
+
+11. 19. Let’s expand the issue transaction and take a look so we can see what it will do.
+Line 68 creates a new CommercialPaper object from the parameters passed in using the static createInstance method on the CommercialPaper class. This class is defined in the separate “paper.js” file which is also if the lib folder alongside papercontract.js if you want to take a look at this method.
+Line 71 then moves the newly created paper into the ISSUED state and on line 74 it has its owner set from the parameters passed in.
+Line 77 adds the paper to a “paperList” which is responsible for storing the state of the paper in the world state. This is defined in the paperlist.js file if you want to take a deeper look.
+Line 80 then returns the paper to the client who called this transaction.
+
+Now we are going to install the papercontract onto a peer in the network.
+
+11. Let's go back to MagnetoCorp terminal window and issue the following command:
+   docker exec cliMagnetoCorp peer chaincode install -n papercontract -v 0.0.3 -p /opt/gopath/src/github.com/contract -l node
+Note: The above command must be entered as a single line. Be sure to copy /paste and enter it as a single line.
+
+Note 2: In the above command, the flags are case-sensitive and the flag “-l” is a letter “l” for language and not a number one.
+
+The output should be something like this one:
+
+2020-01-23 18:57:30.846 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 001 Using default escc
+2020-01-23 18:57:30.846 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 002 Using default vscc
+2020-01-23 18:57:30.866 UTC [chaincodeCmd] install -> INFO 003 Installed remotely response:<status:200 payload:"OK" > 
+ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/contract$ 
+
+This command uses the cliMagnetoCorp container which was configured to send commands to peer0.org1.example.com in our basic network. Its main role is to copy the papercontract source code and send it to the remote peer, ready for it to be instantiated.
 
 
+[Diagram]
 
+12. To instantiate the contract on peer0, issue the following command at the
+MagnetoCorp terminal:
+   docker exec cliMagnetoCorp peer chaincode instantiate -n papercontract -v 0.0.3 -l node -c '{"Args":["org.papernet.commercialpaper:instantiate"]}' -C mychannel -P "AND ('Org1MSP.member')"
+Note: As before, the above command must be entered as a single line. If you copy and paste it from the pdf, be sure to enter it as a single line. Again, remember, the flags are case-sensitive and the flag “-l” is a letter “l” for language and not a number one.
 
 
 
