@@ -17,6 +17,8 @@ In diagram form it looks like this:
 
 0. Let's clean up from the previous lab, making sure that all docker containers are stopped and removed:
 
+docker stop $(docker ps -aq)
+docker rm $(docker ps -aq)
 
 1. Enter the following cd command to change directory to the basic network folder that we will use for this lab:
 
