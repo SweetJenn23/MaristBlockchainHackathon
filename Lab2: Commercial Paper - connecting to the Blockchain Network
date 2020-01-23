@@ -371,10 +371,66 @@ npm install
 
 Note: remember this can take a while to complete.
 
-25. s we are going to be running as Balaji, we need to load the identity they are going
+25. As we are going to be running as Balaji, we need to load the identity they are going
 to use into DigiBank’s wallet, just like we did for Isabella earlier: 
 
 node addToWallet.js
+
+26. Let’s take a quick look again at the identity the application copied: 
+ls ../identity/user/balaji/wallet/
+
+ubuntu@qa10:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/digibank/application$ ls ../identity/user/balaji/wallet/
+Admin@org1.example.com
+
+This time you can see the identity is Admin@org1.example.com, as Balaji is acting as an admin for DigiBank.
+
+Just like last time, we can also run another command, we can see the three files that make up the identity itself:
+ls ../identity/user/balaji/wallet/Admin@org1.example.com
+
+ubuntu@qa10:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/digibank/application$ ls ../identity/user/balaji/wallet/Admin@org1.example.com
+Admin@org1.example.com  cd96d5260ad4757551ed4a5a991e62130f8008a0bf996e4e4b84cd097a747fec-priv  cd96d5260ad4757551ed4a5a991e62130f8008a0bf996e4e4b84cd097a747fec-pub
+
+Again, these files consist of a private key for signing transactions, a public key linked to the private key and a file that contains both metadata and a certificate for our user.
+Now Balaji from DigiBank would like to buy the commercial paper 00001. However, he would like to take a look at this paper (00001) on the ledger before he submits the buy transaction.
+
+
+27. As Balaji from the DigiBank terminal, run this command to take a look at the commercial paper:
+
+node getPaper.js
+
+However, if we look at the output, we can see that running getPaper.js returns an error because the “getPaper” transaction does not exist in the commercial paper smart contract that is currently deployed into the PaperNet network.
+So now, we are going to help Balaji implement the new transaction in the commercial paper smart contract.
+
+
+Navigate to the folder: /home/blockchain/workspace/fabric-getting-started/fabric- samples/commercial-paper/organization/digibank/contract/lib/papercontract.js
+Note: Make sure you choose the digibank folder and not the magnetocorp one.
+
+28. We looked at the issue transaction in the papercontract earlier in this lab, but now we are going to create a new transaction called getPaper. 
+It is going to be a simple transaction that just returns the paper that was requested as a parameter. 
+We are going to insert it between the existing instantiate and issue transactions starting on line 55.
+      
+      
+      /**
+        * Get commercial paper
+        * @param {Context} ctx the transaction context
+        * @param {String} issuer commercial paper issuer
+        * @param {Integer} paperNumber paper number for this issuer
+       */
+       async getPaper(ctx, issuer, paperNumber) {
+         try {
+           console.log('getPaper for: ' + issuer + ' ' + paperNumber);
+           let paperKey = CommercialPaper.makeKey([issuer, paperNumber]);
+           let paper = await ctx.paperList.getPaper(paperKey);
+           return paper;
+         } catch(e) {
+           throw new Error('Paper: ' + paperNumber + ' absent for ' + issuer);
+} }
+You can either copy the code above or type it in yourself, but make sure it is correct and in the right place .
+
+Notice how the new getPaper code is placed after the instantiate transaction finishes, and before the issue transaction begins.
+
+
+
 
 
 
