@@ -15,7 +15,7 @@ In diagram form it looks like this:
 
 ![Screenshot](Architecture.png)
 
-Part 2  
+
 1. Enter the following cd command to change directory to the basic network folder that we will use for this lab:
 
 ubuntu@jf01:~$ cd git/src/github.com/hyperledger/fabric-samples/basic-network/
@@ -61,9 +61,107 @@ b6e69ff6af06        hyperledger/fabric-orderer:1.4.1   "orderer"                
 
 Basic network:
 
+5. These containers are joined together into the same docker network called net_basic. A docker network lets containers communicate with each other. Take a look at the network by running this command to inspect it:
+
+docker network inspect net_basic
+You should see output similar to this:
+
+ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/basic-network$ docker network inspect net_basic
+[
+    {
+        "Name": "net_basic",
+        "Id": "0cd8c5d6a9aa8d355087b136e705207bc493c596ee9844cc3cf0f59b196fc3b2",
+        "Created": "2020-01-23T17:52:01.788235583Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "192.168.64.0/20",
+                    "Gateway": "192.168.64.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "30d71804d58de41efc59dbb7fd12cd6fa0ddb8b16c671d3345d4d6975b649329": {
+                "Name": "ca.example.com",
+                "EndpointID": "4b83e80873897bf3577811578099dc69a50aee4f59669b7d30bf43e7f5fa1d4f",
+                "MacAddress": "02:42:c0:a8:40:02",
+                "IPv4Address": "192.168.64.2/20",
+                "IPv6Address": ""
+            },
+            "8508faada7f516fcb33165248114c26b1dd00baae9a96bb62539e2f7d1792f35": {
+                "Name": "couchdb",
+                "EndpointID": "6a9cb14f1417afde230adcd780d572e76a46a4fbf2ca6a964b0a7dd018c8caa3",
+                "MacAddress": "02:42:c0:a8:40:03",
+                "IPv4Address": "192.168.64.3/20",
+                "IPv6Address": ""
+            },
+            "b6e69ff6af067e51192deb6799f63a985da7c437aec8a7614e73aa0588f61304": {
+                "Name": "orderer.example.com",
+                "EndpointID": "ac7d9726ecdf04e638132f7dfba9c6c7a8f6dc6ad85c65bb0f0aba0ab13cbad1",
+                "MacAddress": "02:42:c0:a8:40:04",
+                "IPv4Address": "192.168.64.4/20",
+                "IPv6Address": ""
+            },
+            "f3e4a0c597fdec085bd0cf52e77fcb034df7d4c46e56bb56024d1f6a8feb4d67": {
+                "Name": "peer0.org1.example.com",
+                "EndpointID": "e127d2191ec9c79bc95e29ecd103495ee960d04179ea2800f3f6643ccaa0bacf",
+                "MacAddress": "02:42:c0:a8:40:05",
+                "IPv4Address": "192.168.64.5/20",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {},
+        "Labels": {}
+    }
+]
+ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/basic-network$ 
+
+Scroll back up and look at the output. You can see that each of the containers have their own IP address inside the same network so they can communicate with each other.
+Next, we will begin working as if we were an administrator for MagnetoCorp who would want to see combined logs from all these components. Although proper dashboards could be created, we will use a simple log viewing tool in this lab.
+
+Part II
+
+From the terminal, change to the following folder:
+    cd ../commercial-paper/organization/magnetocorp/configuration/cli/
+The full path should now be showing as:
+
+ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/configuration/cli$ 
+
+Next, we are going to act as a MagnetoCorp administrator again and interact with the network. To do this we need to issue commands to the peer to install and instantiate smart contracts (also known as chaincode).  
+
+Part III Running the Issue transaction as MagnetoCorp
+
+First, let’s give our terminal a name so we know who we are running as by issuing the command:
+   set-title MagnetoCorp
+Prior to that, we need to add the set-title command to $HOME/.bashrc, by copying the following:
+
+set-title(){
+  ORIG=$PS1
+  TITLE="\e]2;$@\a"
+  PS1=${ORIG}${TITLE}
+}
+
+After that, let's reload our environment by issuing the command source $HOME/.bashrc
+
+ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/configuration/cli$ source $HOME/.bashrc
+
+And let's give our terminal a name MagnetoCorp:
+ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/configuration/cli$ set-title MagnetoCorp
 
 
- 
+
 
 
 
