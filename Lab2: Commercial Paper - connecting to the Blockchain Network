@@ -1,4 +1,4 @@
-**** Major thanks to IBM Washington Systems Center for their help ****
+**** Major thanks to IBM Washington Systems Center and Bruce Almighty Gilkes for their help ****
 
 This lab is a technical introduction to blockchain, specifically smart contract development using the latest developer enhancements in the Linux Foundation’s Hyperledger Fabric v1.4.
 
@@ -54,7 +54,7 @@ Now let's take a look at the containers.
 4. Run the command below in your terminal docker ps:
 This command lists the docker containers that are running. Although this output is a little hard to read, you can make your terminal window wider to see the output better if you wish. 
 This command shows that we have started four containers, one for each of the Hyperledger fabric-peer, fabric-ca, fabric-couchdb and fabric-orderer components. 
-Together these make up the simple basic-network that we will be using. A more realistic setup would have multiple copies of the components to better reflect the multiple parties in the network, but for a lab this simple network will suffice. In a diagram form, the network looks like this:
+Together these make up the simple basic-network that we will be using. A more realistic setup would have multiple copies of the components to better reflect the multiple parties in the network, but for a lab this simple network will suffice. 
 
 ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/basic-network$ docker ps
 CONTAINER ID        IMAGE                              COMMAND                  CREATED             STATUS              PORTS                                            NAMES
@@ -212,7 +212,7 @@ ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/org
 This command uses the cliMagnetoCorp container which was configured to send commands to peer0.org1.example.com in our basic network. Its main role is to copy the papercontract source code and send it to the remote peer, ready for it to be instantiated.
 
 
-[Diagram]
+https://github.com/AnkaShugol/BlockchainBreakfast/blob/master/img/PaperNet.png
 
 12. To instantiate the contract on peer0, issue the following command at the
 MagnetoCorp terminal:
@@ -234,7 +234,6 @@ c288fb3e9dd2        hyperledger/fabric-ca                                       
 This command also uses the cliMagnetoCorp container to cause the contract to become instantiated on the mychannel channel. In addition, it also invokes the instantiate transaction as part of the command which allows any required initialisation to take place. Finally, note the last option – the -P flag which specifies which organisations in the network need to endorse the transactions issued by this contract before they will be considered valid.
 Note that this command may take a little time to run as it will cause the peer to create a new docker container to be created to run the contract in.
 
-[Diagram]
  
  
  13.  If you wish to see this new container, run the docker ps command again – it should have a name beginning with: dev-peer0.org1.example.com-papercontract-0.
@@ -268,7 +267,7 @@ Line 68: Use the contract to submit the issue transaction, passing in the detail
 Line 71: Log the response
 As we can see above on line 25, the issue application will need to load Isabella’s identity before it can create the transaction, so we need to make sure her identity is in the wallet that the issue application will use as shown in this diagram:
 
-[Diagram]
+
 
 However, before we can run the application, we need to download the dependencies listed in the package.json file from npm
 
@@ -338,10 +337,7 @@ The transaction was also endorsed and validated before it was committed.
 
 Part III Working as DigiCorp
 21. Now that we have issued paper 00001, we want to take on the persona of an employee of DigiBank who is going to buy and redeem this paper. 
-If we look at a diagram, we can see how they will interact with the same network:
 
-
-[Diagram]
 
 22. Let’s open up a new tabbed terminal window so we can act as Balaji, an employee
 of DigiBank. 
