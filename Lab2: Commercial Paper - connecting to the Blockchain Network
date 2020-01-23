@@ -15,6 +15,45 @@ In diagram form it looks like this:
 
 ![Screenshot](Architecture.png)
 
+Part 2  
+1. Enter the following cd command to change directory to the basic network folder that we will use for this lab:
+
+ubuntu@jf01:~$ cd git/src/github.com/hyperledger/fabric-samples/basic-network/
+ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/basic-network$ 
+
+2. Type the ls command and press enter to see the files that make up the basic- network.
+
+ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/basic-network$ ls
+README.md  configtx.yaml    connection.yaml  crypto-config.yaml  generate.sh  start.sh  teardown.sh
+config     connection.json  crypto-config    docker-compose.yml  init.sh      stop.sh
+
+
+These files contain the configuration for the basic-network along with a script to set it up. Feel free to have a look at their contents if you are curious. The main files of interest are start.sh and docker-compose.yml; you can open the files to view them with a command like “code start.sh” but make sure you do not change the contents of any of the files.
+
+3. To start the network running, run the following command in your terminal start.sh: 
+
+ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/basic-network$ ./start.sh
+Note: make sure you enter the period ( . ) at the beginning of this command or the command will not be found.
+This command is a script that starts the docker containers that make up the basic network and may take a minute or so to run. The command may output a warning which you can ignore. When it has finished, your terminal should look something like this:
+
+# Create the channel
+docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger/configtx/channel.tx
+2020-01-23 16:59:10.530 UTC [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
+2020-01-23 16:59:10.560 UTC [cli.common] readBlock -> INFO 002 Received block: 0
+# Join peer0.org1.example.com to the channel.
+docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com peer channel join -b mychannel.block
+2020-01-23 16:59:10.908 UTC [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
+2020-01-23 16:59:10.982 UTC [channelCmd] executeJoin -> INFO 002 Successfully submitted proposal to join channel
+
+Now let's take a look at the containers.
+
+4. Run the command below in your terminal docker ps:
+This command lists the docker containers that are running. Although this output is a little hard to read, you can make your terminal window wider to see the output better if you wish. 
+This command shows that we have started four containers, one for each of the Hyperledger fabric-peer, fabric-ca, fabric-couchdb and fabric-orderer components. 
+Together these make up the simple basic-network that we will be using. A more realistic setup would have multiple copies of the components to better reflect the multiple parties in the network, but for a lab this simple network will suffice. In a diagram form, the network looks like this:
+
+
+
 
 
  
