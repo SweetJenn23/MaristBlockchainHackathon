@@ -244,86 +244,12 @@ There are no Docker chaincode images remaining as well- the byfn.sh down command
 
 Recap: In this section, you:
 
-
-Downloaded the Hyperledger Fabric fabric-samples respository
 Ran the first-network sample to verify core Hyperledger functionality
 Cleaned up afterwards
-
-Section 3: Install the Hyperledger Fabric Certificate Authority
-
-In the prior section, the end-to-end test that you ran supplied its own security-related material such as keys and certificates- everything it needed to perform its test. Therefore it did not need the services of a Certificate Authority.
-
-Almost all "real world" Hyperledger Fabric networks will not be this static- new users, peers and organizations will probably join the network. They will need Public Key Infrastructure (PKI) x.509 certificates in order to participate. The Hyperledger Fabric Certificate Authority (CA) is provided by the Hyperledger Fabric project in order to issue these certificates.
-
-The next major goal in this lab is to run the Hyperledger Fabric Node.js SDK’s end-to-end test. This test makes calls to the Hyperledger Fabric Certificate Authority (CA). Therefore, before we can run that test, you will get started by downloading and building the Hyperledger Fabric CA.
-
-Step 1.1: Use cd to navigate three directory levels up, to the hyperledger directory:
-
-ubuntu@techumaster:~/git/src/github.com/hyperledger/fabric/examples/e2e_cli$ cd ~/git/src/github.com/hyperledger
-ubuntu@techumaster:~/git/src/github.com/hyperledger$
-Step 3.2: Get the source code for the Fabric CA using git:
-
-ubuntu@techumaster:~/git/src/github.com/hyperledger$ git clone -b v1.4.1 --depth 1 https://gerrit.hyperledger.org/r/fabric-ca
-Cloning into 'fabric-ca'...
-remote: Counting objects: 2089, done
-remote: Finding sources: 100% (2089/2089)
-remote: Total 2089 (delta 188), reused 1860 (delta 188)
-Receiving objects: 100% (2089/2089), 6.04 MiB | 0 bytes/s, done.
-Resolving deltas: 100% (188/188), done.
-Checking connectivity... done.
-Note: checking out '27fbd69ab2d0f07212b382eb04aa85c904d2c300'.
-
-You are in 'detached HEAD' state. You can look around, make experimental
-changes and commit them, and you can discard any commits you make in this
-state without impacting any branches by performing another checkout.
-
-If you want to create a new branch to retain commits you create, you may
-do so (now or later) by using -b with the checkout command again. Example:
-
-  git checkout -b <new-branch-name>
-Step 3.3: Navigate to the fabric-ca directory, which is the top directory of where the git command put the code it just downloaded:
-
-ubuntu@techumaster:~/git/src/github.com/hyperledger$ cd fabric-ca
-ubuntu@techumaster:~/git/src/github.com/hyperledger/fabric-ca$
-Step 3.4: Enter the following command, which will build the Hyperledger Fabric CA image. Just like you did with the fabric repo, ‘wrap’ the make command, which is what will do all the work, in a time command, which will give you a measure of the time, including ‘wall clock’ time, required to build the image:
-
-ubuntu@techumaster:~/git/src/github.com/hyperledger/fabric-ca $ time FABRIC_CA_DYNAMIC_LINK=true make docker
-  .
-  .  (output not shown here)
-  .
-real   1m29.510s
-user   0m0.313s
-sys    0m0.160s
-ubuntu@techumaster:~/git/src/github.com/hyperledger/fabric-ca$
-Step 3.5: Enter the docker images command and you will see at the top of the output the Docker image that was just created for the Fabric Certificate Authority:
-
-ubuntu@techumaster:~/git/src/github.com/hyperledger/fabric-ca$ docker images
-REPOSITORY                      TAG                 IMAGE ID            CREATED              SIZE
-hyperledger/fabric-ca          latest                         fb40d26bc7a1        55 seconds ago      317MB
-hyperledger/fabric-ca          s390x-1.4.1                    fb40d26bc7a1        55 seconds ago      317MB
-hyperledger/fabric-tools       latest                         36d8a7db8056        3 days ago          1.52GB
-hyperledger/fabric-tools       s390x-1.4.1-snapshot-d700b43   36d8a7db8056        3 days ago          1.52GB
-hyperledger/fabric-tools       s390x-latest                   36d8a7db8056        3 days ago          1.52GB
-<none>                         <none>                         10ea31c0bee7        3 days ago          1.58GB
-hyperledger/fabric-buildenv    latest                         172f9563573f        3 days ago          1.47GB
-hyperledger/fabric-buildenv    s390x-1.4.1-snapshot-d700b43   172f9563573f        3 days ago          1.47GB
-hyperledger/fabric-buildenv    s390x-latest                   172f9563573f        3 days ago          1.47GB
-hyperledger/fabric-ccenv       latest                         602af5999747        3 days ago          1.41GB
-hyperledger/fabric-ccenv       s390x-1.4.1-snapshot-d700b43   602af5999747        3 days ago          1.41GB
-hyperledger/fabric-ccenv       s390x-latest                   602af5999747        3 days ago          1.41GB
-hyperledger/fabric-orderer     latest                         63f428514b07        3 days ago          147MB
-hyperledger/fabric-orderer     s390x-1.4.1-snapshot-d700b43   63f428514b07        3 days ago          147MB
-hyperledger/fabric-orderer     s390x-latest                   63f428514b07        3 days ago          147MB
-hyperledger/fabric-peer        latest                         b415d479b21c        3 days ago          153MB
-hyperledger/fabric-peer        s390x-1.4.1-snapshot-d700b43   b415d479b21c        3 days ago          153MB
-hyperledger/fabric-peer        s390x-latest                   b415d479b21c        3 days ago          153MB
-hyperledger/fabric-zookeeper   latest                         5db059b03239        3 months ago        1.42GB
-hyperledger/fabric-kafka       latest                         3bbd80f55946        3 months ago        1.43GB
-hyperledger/fabric-couchdb     latest                         7afa6ce179e6        3 months ago        1.55GB
-hyperledger/fabric-baseimage   s390x-0.4.14                   6e4e09df1428        3 months ago        1.38GB
-hyperledger/fabric-baseos      s390x-0.4.14                   4834a1e3ce1c        3 months ago        120MB
-You may have noticed that for many of the images, the Image ID appears more than once, e.g., once with a tag of latest, once with a tag such as s390x-1.4.0-snapshot-d700b43, and once with a tag of s390x-latest. An image can actually be given any number of tags. Think of these tags as nicknames, or aliases. In our case the make process first gave the Docker image it created a descriptive tag, s390x-1.4.1-snapshot-d700b43 in the case of the fabric repo, and s390x-1.4.0 in the case of the fabric-ca repo, and then it also ‘tagged’ it with a new tag, latest. It did that for a reason. When you are working with Docker images, if you specify an image without specifying a tag, the tag defaults to the name latest. So, for example, using the above output, you can specify either hyperledger/fabric-ca, hyperledger/fabric-ca:latest, or hyperledger/fabric-ca:s390x-1.4.1, and in all three cases you are asking for the same image, the image with ID fb40d26bc7a1.
 
 Recap: In this section, you downloaded the source code for the Hyperledger Fabric Certificate Authority and built it. That was easy.
 
 * End of Lab! *
+
+
+© 2020 International Business Machines Corporation. No part of this document may be reproduced or transmitted in any form without written permission from IBM
