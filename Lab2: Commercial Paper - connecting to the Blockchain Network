@@ -133,7 +133,6 @@ ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/basic-network$
 Scroll back up and look at the output. You can see that each of the containers have their own IP address inside the same network so they can communicate with each other.
 Next, we will begin working as if we were an administrator for MagnetoCorp who would want to see combined logs from all these components. Although proper dashboards could be created, we will use a simple log viewing tool in this lab.
 
-Part II
 
 6. From the terminal, change to the following folder:
     cd ../commercial-paper/organization/magnetocorp/configuration/cli/
@@ -143,7 +142,7 @@ ubuntu@jf01:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/org
 
 Next, we are going to act as a MagnetoCorp administrator again and interact with the network. To do this we need to issue commands to the peer to install and instantiate smart contracts (also known as chaincode).  
 
-Part III Running the Issue transaction as MagnetoCorp
+Part II Running the Issue transaction as MagnetoCorp
 
 First, let’s give our terminal a name so we know who we are running as by issuing the command:
    set-title MagnetoCorp
@@ -308,10 +307,74 @@ addToWallet simply copies an identity from the basic-network to our wallet locat
 ubuntu@qa10:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application$  ls ../identity/user/isabella/wallet/
 User1@org1.example.com
 
+Now you can see the User1@org1.example.com folder which is used by the issue application. If we run another command, we can see the three files that make up the identity itself:
+ls ../identity/user/isabella/wallet/User1@org1.example.com
+
+ubuntu@qa10:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application$ ls ../identity/user/isabella/wallet/User1@org1.example.com
+User1@org1.example.com  c75bd6911aca808941c3557ee7c97e90f3952e379497dc55eb903f31b50abc83-priv  c75bd6911aca808941c3557ee7c97e90f3952e379497dc55eb903f31b50abc83-pub
+
+These files consist of a private key for signing transactions, a public key linked to the private key and a file that contains both metadata and a certificate for our user.
+
+20. Now we can finally issue the commercial paper by running:
+
+node issue.js
+
+ubuntu@qa10:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application$ node issue.js
+Connect to Fabric gateway.
+Use network channel: mychannel.
+Use org.papernet.commercialpaper smart contract.
+Submit commercial paper issue transaction.
+Process issue transaction response.{"class":"org.papernet.commercialpaper","key":"\"MagnetoCorp\":\"00001\"","currentState":1,"issuer":"MagnetoCorp","paperNumber":"00001","issueDateTime":"2020-05-31","maturityDateTime":"2020-11-30","faceValue":"5000000","owner":"MagnetoCorp"}
+MagnetoCorp commercial paper : 00001 successfully issued for value 5000000
+Transaction complete.
+Disconnect from Fabric gateway.
+Issue program complete.
 
 
+From the output you can see that we followed the steps outlined above to successfully issue commercial paper 00001 for 5,000,000 USD. We have submitted the transaction to the network and the contract has written these details to the world state and the ledger. 
+The transaction was also endorsed and validated before it was committed.
+
+Part III Working as DigiCorp
+21. Now that we have issued paper 00001, we want to take on the persona of an employee of DigiBank who is going to buy and redeem this paper. 
+If we look at a diagram, we can see how they will interact with the same network:
 
 
+[Diagram]
+
+22. Let’s open up a new tabbed terminal window so we can act as Balaji, an employee
+of DigiBank. 
+
+For ease of use, let’s give this new terminal tab a name: 
+
+set-title DigiBank
+
+Now we can easily switch between the different users as required by clicking on the tab for the user we want.
+
+As DigiBank, let’s change to DigiBank’s application folder: cd ../../digibank/application/
+
+The full path: 
+
+ubuntu@qa10:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/digibank/application$ 
+
+23. Let’s have a look at what files we have in this folder by running:
+ls
+
+ubuntu@qa10:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/digibank/application$ ls
+addToWallet.js  buy.js  package-lock.json  package.json  redeem.js
+
+We can see this is similar to MagnetoCorp’s application folder, but this time we have three different applications, buy.js, redeem.js and getPaper.js instead of issue.js.
+Note: getPaper.js is added as part of this lab, and it is not part of the original Commercial Paper tutorial. 
+The contents of this file are shown in the appendix to this lab guide.
+
+24. As before, before we can run anything, we need to download the dependencies from npm:
+npm install
+
+Note: remember this can take a while to complete.
+
+25. s we are going to be running as Balaji, we need to load the identity they are going
+to use into DigiBank’s wallet, just like we did for Isabella earlier: 
+
+node addToWallet.js
 
 
 
