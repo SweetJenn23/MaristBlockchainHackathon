@@ -13,7 +13,7 @@ As an example, if a paper was issued at a face value of 10 million USD for a 6-m
 These three key steps of issue, buy and redeem are the main transactions in a simplified commercial paper marketplace, which we will mirror in our lab. We will see a commercial paper issued by a company called MagnetoCorp, and once issued on the PaperNet blockchain network another company called DigiBank will first buy the paper and then redeem it.
 In diagram form it looks like this:
 
-![Screenshot](Architecture.png)
+![Screenshot](https://github.com/AnkaShugol/BlockchainBreakfast/blob/master/Architecture.png)
 
 0. Let's clean up from the previous lab, making sure that all docker containers are stopped and removed:
 
