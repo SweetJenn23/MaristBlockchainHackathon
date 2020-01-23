@@ -15,6 +15,8 @@ In diagram form it looks like this:
 
 ![Screenshot](Architecture.png)
 
+0. Let's clean up from the previous lab, making sure that all docker containers are stopped and removed:
+
 
 1. Enter the following cd command to change directory to the basic network folder that we will use for this lab:
 
@@ -214,16 +216,58 @@ This command uses the cliMagnetoCorp container which was configured to send comm
 12. To instantiate the contract on peer0, issue the following command at the
 MagnetoCorp terminal:
    docker exec cliMagnetoCorp peer chaincode instantiate -n papercontract -v 0.0.3 -l node -c '{"Args":["org.papernet.commercialpaper:instantiate"]}' -C mychannel -P "AND ('Org1MSP.member')"
-Note: As before, the above command must be entered as a single line. If you copy and paste it from the pdf, be sure to enter it as a single line. Again, remember, the flags are case-sensitive and the flag “-l” is a letter “l” for language and not a number one.
+Note: As before, the above command must be entered as a single line. If you copy and paste it from here, be sure to enter it as a single line. 
+Again, remember, the flags are case-sensitive and the flag “-l” is a letter “l” for language and not a number one.
 
+The result should be like this, you should see the new container with the chaincode. Issue docker ps :
 
+ubuntu@qa10:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/contract$ docker ps
+CONTAINER ID        IMAGE                                                                                                             COMMAND                  CREATED             STATUS              PORTS                                            NAMES
+5e1ab12c75b7        dev-peer0.org1.example.com-papercontract-0.0.3-5f1d60e28249e81faa02102ce57e28b86443fdc9c08e350371a8b90ac690ae6e   "/bin/sh -c 'cd /usr…"   57 seconds ago      Up 55 seconds                                                        dev-peer0.org1.example.com-papercontract-0.0.3
+55fcebc5df47        hyperledger/fabric-tools                                                                                          "/bin/bash"              3 minutes ago       Up 3 minutes                                                         cliMagnetoCorp
+232ad9d42298        hyperledger/fabric-peer                                                                                           "peer node start"        4 minutes ago       Up 4 minutes        0.0.0.0:7051->7051/tcp, 0.0.0.0:7053->7053/tcp   peer0.org1.example.com
+5ad2a5616f28        hyperledger/fabric-orderer                                                                                        "orderer"                4 minutes ago       Up 4 minutes        0.0.0.0:7050->7050/tcp                           orderer.example.com
+3c64cd01840b        hyperledger/fabric-couchdb                                                                                        "tini -- /docker-ent…"   4 minutes ago       Up 4 minutes        4369/tcp, 9100/tcp, 0.0.0.0:5984->5984/tcp       couchdb
+c288fb3e9dd2        hyperledger/fabric-ca                                                                                             "sh -c 'fabric-ca-se…"   4 minutes ago       Up 4 minutes        0.0.0.0:7054->7054/tcp                           ca.example.com
 
+This command also uses the cliMagnetoCorp container to cause the contract to become instantiated on the mychannel channel. In addition, it also invokes the instantiate transaction as part of the command which allows any required initialisation to take place. Finally, note the last option – the -P flag which specifies which organisations in the network need to endorse the transactions issued by this contract before they will be considered valid.
+Note that this command may take a little time to run as it will cause the peer to create a new docker container to be created to run the contract in.
 
+[Diagram]
+ 
+ 
+ 13.  If you wish to see this new container, run the docker ps command again – it should have a name beginning with: dev-peer0.org1.example.com-papercontract-0.
 
+Now the contract is up and running, it is time to start running transactions, and to start things moving, MagnetoCorp is going to run an application to issue the first commercial paper on the PaperNet network. To do this we are going to act as Isabella, an employee of MagnetoCorp.
 
+14. Change to the folder that contains the issue application. 
 
+cd ../application/
 
+ubuntu@qa10:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application$ 
 
+15. Run the ls command to see the files in this folder: ls
+We see that there are several files:
+
+ubuntu@qa10:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application$ ls
+addToWallet.js  issue.js  package-lock.json  package.json
+
+Next let’s take a look at the issue application.
+
+16. Take a look at the code for the issue application. The main points are:
+
+Lines 18 - 21: Import various dependencies
+Line 25: Load the identity from the wallet on the file system
+Line 31: Create a new gateway
+Line 41: Load the connection profile from file system
+Line 53: Connect to the gateway
+Line 58: Get the mychannel channel from the gateway network
+Line 63: Get the papercontract contract from the gateway
+Line 68: Use the contract to submit the issue transaction, passing in the details of the paper to be issued.
+Line 71: Log the response
+As we can see above on line 25, the issue application will need to load Isabella’s identity before it can create the transaction, so we need to make sure her identity is in the wallet that the issue application will use as shown in this diagram:
+
+[Diagram]
 
 
 
