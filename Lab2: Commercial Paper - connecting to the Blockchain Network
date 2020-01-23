@@ -269,15 +269,44 @@ As we can see above on line 25, the issue application will need to load Isabella
 
 [Diagram]
 
+However, before we can run the application, we need to download the dependencies listed in the package.json file from npm
 
 
+17. Switch back to the MagnetoCorp terminal and issue this command:
+npm install
+Note: This will take a while to download the dependencies and you may see a slightly different output to that shown below.
 
+If you have issues with accessing the directory, you should run 
+sudo chown ubuntu /home/ubuntu/git and then retry npm install
 
+When the download has finished, if you run ls again, you will see a new node_modules folder has been created. It is the node_modules folder that contains the dependencies.
 
+ COPY Release/grpc_node.node
+  COPY /home/ubuntu/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application/node_modules/grpc/src/node/extension_binary/node-v64-linux-s390x-glibc/grpc_node.node
+  TOUCH Release/obj.target/action_after_build.stamp
+make: Leaving directory '/home/ubuntu/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application/node_modules/grpc/build'
+npm WARN nodejs@1.0.0 No description
+npm WARN nodejs@1.0.0 No repository field.
 
+added 323 packages from 231 contributors and audited 1950 packages in 114.558s
+found 1 critical severity vulnerability
+  run `npm audit fix` to fix them, or `npm audit` for details
+  
+  
+18. Now we are almost ready to issue a new commercial paper, we just need to load Isabella’s digital certificate into the wallet before we can use it. 
+To do this we run the following application:
+   node addToWallet.js
 
+ubuntu@qa10:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application$ node addToWallet.js
+done
 
+addToWallet simply copies an identity from the basic-network to our wallet location for use by other applications.
 
+19. Run this command to see the contents of the newly created wallet:
+      ls ../identity/user/isabella/wallet/
+      
+ubuntu@qa10:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application$  ls ../identity/user/isabella/wallet/
+User1@org1.example.com
 
 
 
