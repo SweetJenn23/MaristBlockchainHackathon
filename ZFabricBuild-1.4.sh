@@ -104,7 +104,7 @@ install_docker() {
     fi
     tar -xzf $DOCKER_DIR.tar.gz
     if [ -f /usr/bin/docker ]; then
-      mv /usr/bin/docker /usr/bin/docker.orig
+      sudo mv /usr/bin/docker /usr/bin/docker.orig
     fi
     cp $DOCKER_DIR/docker* /usr/bin
 
@@ -116,12 +116,12 @@ install_docker() {
     # Create environment file for the Docker service
     sudo touch /etc/docker/docker.conf
     sudo chmod 664 /etc/docker/docker.conf
-    echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock -s overlay"' >> /etc/docker/docker.conf
+    sudo echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock -s overlay"' >> /etc/docker/docker.conf
     sudo touch /etc/systemd/system/docker.service
     sudo chmod 664 /etc/systemd/system/docker.service
 
     # Create Docker service file
-    cat > /etc/systemd/system/docker.service <<EOF
+    sudo cat > /etc/systemd/system/docker.service <<EOF
 [Unit]
 Description=Docker Application Container Engine
 Documentation=https://docs.docker.com
@@ -258,12 +258,12 @@ setup_behave() {
   # Setup Firewall Rules if they don't already exist
   grep -q '2375' <<< `iptables -L INPUT -nv`
   if [ $? != 0 ]; then
-    iptables -I INPUT 1 -p tcp --dport 21212 -j ACCEPT
-    iptables -I INPUT 1 -p tcp --dport 7050 -j ACCEPT
-    iptables -I INPUT 1 -p tcp --dport 7051 -j ACCEPT
-    iptables -I INPUT 1 -p tcp --dport 7053 -j ACCEPT
-    iptables -I INPUT 1 -p tcp --dport 7054 -j ACCEPT
-    iptables -I INPUT 1 -i docker0 -p tcp --dport 2375 -j ACCEPT
+    sudo iptables -I INPUT 1 -p tcp --dport 21212 -j ACCEPT
+    sudo iptables -I INPUT 1 -p tcp --dport 7050 -j ACCEPT
+    sudo iptables -I INPUT 1 -p tcp --dport 7051 -j ACCEPT
+    sudo iptables -I INPUT 1 -p tcp --dport 7053 -j ACCEPT
+    sudo iptables -I INPUT 1 -p tcp --dport 7054 -j ACCEPT
+    sudo iptables -I INPUT 1 -i docker0 -p tcp --dport 2375 -j ACCEPT
   fi
 
   # Install Behave Tests Pre-Reqs
