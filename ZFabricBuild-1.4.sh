@@ -135,21 +135,21 @@ EnvironmentFile=-/etc/docker/docker.conf
 WantedBy=default.target
 EOF
     # Start Docker Daemon
-    systemctl daemon-reload
-    systemctl enable docker.service
-    systemctl start docker.service
+    sudo systemctl daemon-reload
+    sudo systemctl enable docker.service
+    sudo systemctl start docker.service
   elif [ $1 == "sles" ]; then
     zypper --non-interactive in docker
-    systemctl stop docker.service
+    sudo systemctl stop docker.service
     sed -i '/^DOCKER_OPTS/ s/\"$/ \-H tcp\:\/\/0\.0\.0\.0\:2375\"/' /etc/sysconfig/docker
-    systemctl enable docker.service
-    systemctl start docker.service
+    sudo systemctl enable docker.service
+    sudo systemctl start docker.service
   else      # Setup Docker for Ubuntu
     sudo apt-get -y install docker.io
-    systemctl stop docker.service
+    sudo systemctl stop docker.service
     sed -i "\$aDOCKER_OPTS=\"-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock\"" /etc/default/docker
-    systemctl enable docker.service
-    systemctl start docker.service
+    sudo systemctl enable docker.service
+    sudo systemctl start docker.service
   fi
 
   echo -e "*** DONE ***\n"
