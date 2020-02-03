@@ -114,10 +114,10 @@ install_docker() {
     fi
 
     # Create environment file for the Docker service
-    touch /etc/docker/docker.conf
+    sudo touch /etc/docker/docker.conf
     sudo chmod 664 /etc/docker/docker.conf
     echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock -s overlay"' >> /etc/docker/docker.conf
-    touch /etc/systemd/system/docker.service
+    sudo touch /etc/systemd/system/docker.service
     sudo chmod 664 /etc/systemd/system/docker.service
 
     # Create Docker service file
