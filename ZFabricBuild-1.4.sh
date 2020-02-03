@@ -36,7 +36,7 @@ EOF
 # Install prerequisite packages for an RHEL Hyperledger build
 prereq_rhel() {
   echo -e "\nInstalling RHEL prerequisite packages\n"
-  yum -y -q install git gcc gcc-c++ wget tar python-setuptools python-devel device-mapper libtool-ltdl-devel libffi-devel openssl-devel
+  sudo yum -y -q install git gcc gcc-c++ wget tar python-setuptools python-devel device-mapper libtool-ltdl-devel libffi-devel openssl-devel
   if [ $? != 0 ]; then
     echo -e "\nERROR: Unable to install pre-requisite packages.\n"
     exit 1
@@ -62,8 +62,8 @@ prereq_sles() {
 # Install prerequisite packages for an Unbuntu Hyperledger build
 prereq_ubuntu() {
   echo -e "\nInstalling Ubuntu prerequisite packages\n"
-  apt-get update
-  apt-get -y install build-essential git debootstrap python-setuptools python-dev alien libtool libffi-dev libssl-dev
+  sudo apt-get update
+  sudo apt-get -y install build-essential git debootstrap python-setuptools python-dev alien libtool libffi-dev libssl-dev
   if [ $? != 0 ]; then
     echo -e "\nERROR: Unable to install pre-requisite packages.\n"
     exit 1
@@ -115,10 +115,10 @@ install_docker() {
 
     # Create environment file for the Docker service
     touch /etc/docker/docker.conf
-    chmod 664 /etc/docker/docker.conf
+    sudo chmod 664 /etc/docker/docker.conf
     echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock -s overlay"' >> /etc/docker/docker.conf
     touch /etc/systemd/system/docker.service
-    chmod 664 /etc/systemd/system/docker.service
+    sudo chmod 664 /etc/systemd/system/docker.service
 
     # Create Docker service file
     cat > /etc/systemd/system/docker.service <<EOF
@@ -145,12 +145,11 @@ EOF
     systemctl enable docker.service
     systemctl start docker.service
   else      # Setup Docker for Ubuntu
-    apt-get -y install docker.io
+    sudo apt-get -y install docker.io
     systemctl stop docker.service
     sed -i "\$aDOCKER_OPTS=\"-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock\"" /etc/default/docker
     systemctl enable docker.service
     systemctl start docker.service
-    usermod -aG docker ubuntu
   fi
 
   echo -e "*** DONE ***\n"
@@ -334,10 +333,10 @@ if [ $# == 1 ] && ([[ $1 == "-h"  ||  $1 == "--help" || $1 == "-?" || $1 == "?" 
 fi
 
 # Ensure that the user running this script is root.
-if [ xroot != x$(whoami) ]; then
-  echo -e "\nERROR: You must be root to run this script.\n"
-  exit 1
-fi
+#if [ xroot != x$(whoami) ]; then
+#  echo -e "\nERROR: You must be root to run this script.\n"
+#  exit 1
+#fi
 
 # Determine Linux distribution
 get_linux_flavor
