@@ -177,13 +177,15 @@ build_hyperledger_fabric() {
   # Download latest Hyperledger Fabric codebase
   if [ ! -d $GOPATH/src/github.com/hyperledger ]; then
     mkdir -p $GOPATH/src/github.com/hyperledger
-    cd $GOPATH/src/github.com/hyperledger
-  else # Delete fabric directory, if it exists
-    rm -rf fabric
-    git clone -b release-1.4 https://github.com/hyperledger/fabric.git
-    cd $GOPATH/src/github.com/hyperledger/fabric
-    make native docker
   fi
+  
+  # Delete fabric directory, if it exists
+  cd $GOPATH/src/github.com/hyperledger
+  rm -rf fabric
+  git clone -b release-1.4 https://github.com/hyperledger/fabric.git
+  cd $GOPATH/src/github.com/hyperledger/fabric
+  make native docker
+  
 
   if [ $? != 0 ]; then
     echo -e "\nERROR: Unable to build the Hyperledger Fabric peer components.\n"
