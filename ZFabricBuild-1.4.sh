@@ -282,27 +282,27 @@ post_build() {
   echo -e "\n*** post_build ***\n"
 
   if ! test -e /etc/profile.d/goroot.sh; then
-cat <<EOF >/etc/profile.d/goroot.sh
+sudo cat <<EOF >/etc/profile.d/goroot.sh
 export GOROOT=$GOROOT
 export GOPATH=$GOPATH
 export PATH=\$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
 export XDG_CACHE_HOME=/tmp/.cache
 EOF
 
-cat <<EOF >>/etc/environment
+sudo cat <<EOF >>/etc/environment
 GOROOT=$GOROOT
 GOPATH=$GOPATH
 EOF
 
     if [ $OS_FLAVOR == "rhel" ] || [ $OS_FLAVOR == "sles" ]; then
-cat <<EOF >>/etc/environment
+sudo cat <<EOF >>/etc/environment
 CC=gcc
 EOF
     fi
   fi
 
   if [ $OS_FLAVOR == "ubuntu" ]; then
-    apt -y autoremove
+    sudo apt -y autoremove
   fi
 
   # Add non-root user to docker group
@@ -312,7 +312,7 @@ EOF
   fi
 
   # Cleanup files and Docker images and containers
-  rm -rf /tmp/*
+  sudo rm -rf /tmp/*
 
   echo -e "Cleanup Docker artifacts\n"
   # Delete any temporary Docker containers created during the build process
