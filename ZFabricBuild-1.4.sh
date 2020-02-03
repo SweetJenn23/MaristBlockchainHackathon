@@ -237,66 +237,13 @@ build_hyperledger_fabric-samples() {
   ln -s /home/ubuntu/git/src/github.com/hyperledger/fabric/sampleconfig config
 
   if [ $? != 0 ]; then
-    echo -e "\nERROR: Unable to build the Hyperledger Node SDK components.\n"
+    echo -e "\nERROR: Unable to build the Hyperledger Fabric Samples.\n"
     exit 1
   fi
 
   echo -e "*** DONE ***\n"
 }
 
-# Build the Hyperledger Fabric Node SDK components
-#build_hyperledger_fabric-sdk-node() {
-#  echo -e "\n*** build_hyperledger_fabric-sdk-node ***\n"
-
-  # Download latest Hyperledger Fabric codebase
-#  if [ ! -d $GOPATH/src/github.com/hyperledger ]; then
-#    mkdir -p $GOPATH/src/github.com/hyperledger
-#  fi
-#  cd $GOPATH/src/github.com/hyperledger
-  # Delete fabric directory, if it exists
-#  rm -rf fabric-sdk-node
-
-#  git clone -b release-1.4 https://github.com/hyperledger/fabric-sdk-node.git
-
-#  cd $GOPATH/src/github.com/hyperledger/fabric-sdk-node
-#   npm install
-
-# npm install && sudo npm install -g gulp && sudo npm install -g istanbul && gulp && gulp ca && rm -rf node_modules/fabric-ca-client && sudo npm install
-
-#  if [ $? != 0 ]; then
-#    echo -e "\nERROR: Unable to build the Hyperledger Node SDK components.\n"
-#    exit 1
-#  fi
-
-#  echo -e "*** DONE ***\n"
-#}
-
-# Install IBM Java 1.8
-#install_java() {
-#  echo -e "\n*** install_java ***\n"
-#  JAVA_VERSION=1.8.0_sr3fp12
-#  ESUM_s390x="46766ac01bc2b7d2f3814b6b1561e2d06c7d92862192b313af6e2f77ce86d849"
-#  ESUM_ppc64le="6fb86f2188562a56d4f5621a272e2cab1ec3d61a13b80dec9dc958e9568d9892"
-#  eval ESUM=\$ESUM_s390x
-#  BASE_URL="https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/meta/"
-#  YML_FILE="sdk/linux/s390x/index.yml"
-#  wget -q -U UA_IBM_JAVA_Docker -O /tmp/index.yml $BASE_URL/$YML_FILE
-#  JAVA_URL=$(cat /tmp/index.yml | sed -n '/'$JAVA_VERSION'/{n;p}' | sed -n 's/\s*uri:\s//p' | tr -d '\r')
-#  wget -q -U UA_IBM_JAVA_Docker -O /tmp/ibm-java.bin $JAVA_URL
-#  echo "$ESUM  /tmp/ibm-java.bin" | sha256sum -c -
-#  if [ $? != 0 ]; then
-#    echo -e "\nERROR: Java image digests do not match.\n Unable to build the Hyperledger Fabric components.\n"
-#    exit 1
-#  fi
-#  echo "INSTALLER_UI=silent" > /tmp/response.properties
-#  echo "USER_INSTALL_DIR=/opt/ibm/java" >> /tmp/response.properties
-#  echo "LICENSE_ACCEPTED=TRUE" >> /tmp/response.properties
-#  mkdir -p /opt/ibm
-#  chmod +x /tmp/ibm-java.bin
-#  /tmp/ibm-java.bin -i silent -f /tmp/response.properties
-#  ln -s /opt/ibm/java/jre/bin/* /usr/local/bin/
-#  echo -e "*** DONE ***\n"
-#}
 
 # Install Nodejs
 install_nodejs() {
@@ -329,20 +276,6 @@ setup_behave() {
   pip install -q behave nose docker-compose > /dev/null 2>&1
   pip install -q -I flask==0.10.1 python-dateutil==2.2 pytz==2014.3 pyyaml==3.10 couchdb==1.0 flask-cors==2.0.1 requests==2.4.3 pyOpenSSL==16.2.0 pysha3 slugify ecdsa > /dev/null 2>&1
   pip install --upgrade six
-
-  # Install protobuf and grpcio
-#  git clone https://github.com/grpc/grpc.git
-#  cd grpc
-#  pip install -rrequirements.txt
-# git checkout tags/release-0_13_1
-#  sed -i -e "s/boringssl.googlesource.com/github.com\/linux-on-ibm-z/" .gitmodules
-#  git submodule sync
-#  git submodule update --init
-#  cd third_party/boringssl
-#  git checkout s390x-big-endian
-#  cd ../..
-#  GRPC_PYTHON_BUILD_WITH_CYTHON=1 pip install .
-#  echo -e "*** DONE ***\n"
 }
 
 # Update profile with environment variables required for Hyperledger Fabric use
@@ -414,10 +347,6 @@ get_linux_flavor
 prereq_$OS_FLAVOR
 
 # Default action is to build all components for the Hyperledger Fabric environment
-#if ! java -version > /dev/null 2>&1; then
-#  install_java
-#fi
-
 if ! node -v > /dev/null 2>&1; then
   install_nodejs
 fi
@@ -434,7 +363,6 @@ fi
 
 build_hyperledger_fabric $OS_FLAVOR
 build_hyperledger_fabric-ca $OS_FLAVOR
-#build_hyperledger_fabric-sdk-node $OS_FLAVOR
 build_hyperledger_fabric-samples $OS_FLAVOR
 
 
