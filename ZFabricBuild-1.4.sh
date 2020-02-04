@@ -189,7 +189,7 @@ build_hyperledger_fabric() {
   rm -rf fabric
   git clone -b release-1.4 https://github.com/hyperledger/fabric.git
   cd $GOPATH/src/github.com/hyperledger/fabric
-  newgrp - docker
+  newgrp docker
   make native docker
   
 
