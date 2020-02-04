@@ -42,7 +42,7 @@ prereq_rhel() {
     exit 1
   fi
   if [ ! -f /usr/bin/s390x-linux-gnu-gcc ]; then
-    ln -s /usr/bin/s390x-redhat-linux-gcc /usr/bin/s390x-linux-gnu-gcc
+    sudo ln -s /usr/bin/s390x-redhat-linux-gcc /usr/bin/s390x-linux-gnu-gcc
   fi
 }
 
@@ -162,8 +162,8 @@ install_golang() {
   cd /tmp
   wget --quiet --no-check-certificate https://dl.google.com/go/go1.12.15.linux-s390x.tar.gz
   tar -xvf go${GO_VER}.linux-s390x.tar.gz
-  mv go /opt
-  chmod 775 /opt/go
+  sudo mv go /opt
+  sudo chmod 775 /opt/go
   echo -e "*** DONE ***\n"
 }
 
@@ -250,7 +250,7 @@ install_nodejs() {
   echo -e "\n*** install_nodejs ***\n"
   cd /tmp
   wget -q https://nodejs.org/dist/v10.15.3/node-v10.15.3-linux-s390x.tar.gz
-  cd /usr/local && tar --strip-components=1 -xzf /tmp/node-v10.15.3-linux-s390x.tar.gz
+  cd /usr/local && sudo tar --strip-components=1 -xzf /tmp/node-v10.15.3-linux-s390x.tar.gz
   echo -e "*** DONE ***\n"
 }
 
