@@ -156,6 +156,14 @@ EOF"
   BCUSER="$(whoami)"
   sudo usermod -aG docker $BCUSER
   sudo systemctl restart docker
+  echo "Your userid  was not a member of the docker group. This has been corrected."
+  relog=true
+  # Relog needed?
+    if [[ "$relog" = true ]]; then
+     echo "Some changes have been made that require you to log out and log back in."
+     echo "Please do this now and then re-run this script."
+     exit 1
+    fi
  
   echo -e "*** DONE ***\n"
 }
