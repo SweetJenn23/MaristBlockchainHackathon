@@ -249,8 +249,8 @@ build_hyperledger_fabric-samples() {
 install_nodejs() {
   echo -e "\n*** install_nodejs ***\n"
   cd /tmp
-  wget -q https://nodejs.org/dist/v10.15.3/node-v10.15.3-linux-s390x.tar.gz
-  cd /usr/local && sudo tar --strip-components=1 -xzf /tmp/node-v10.15.3-linux-s390x.tar.gz
+  wget -q https://nodejs.org/dist/v8.9.4/node-v8.9.4-linux-s390x.tar.gz
+  cd /usr/local && sudo tar --strip-components=1 -xzf /tmp/node-v8.9.4-linux-s390x.tar.gz
   echo -e "*** DONE ***\n"
 }
 
