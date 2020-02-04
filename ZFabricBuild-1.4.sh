@@ -154,7 +154,7 @@ EOF"
 
   sudo groupadd docker
   BCUSER="$(whoami)"
-  sudo usermod -a $BCUSER docker
+  sudo usermod -aG $BCUSER docker
   sudo systemctl restart docker
  
   echo -e "*** DONE ***\n"
