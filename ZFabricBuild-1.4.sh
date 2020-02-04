@@ -106,11 +106,11 @@ install_docker() {
     if [ -f /usr/bin/docker ]; then
       sudo mv /usr/bin/docker /usr/bin/docker.orig
     fi
-    cp $DOCKER_DIR/docker* /usr/bin
+    sudo cp $DOCKER_DIR/docker* /usr/bin
 
     # Setup Docker Daemon service
     if [ ! -d /etc/docker ]; then
-      mkdir -p /etc/docker
+      sudo mkdir -p /etc/docker
     fi
 
     # Create environment file for the Docker service
