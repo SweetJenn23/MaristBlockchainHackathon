@@ -55,7 +55,7 @@ prereq_sles() {
     exit 1
   fi
   if [ ! -f /usr/bin/s390x-linux-gnu-gcc ]; then
-    ln -s /usr/bin/gcc /usr/bin/s390x-linux-gnu-gcc
+    sudo ln -s /usr/bin/gcc /usr/bin/s390x-linux-gnu-gcc
   fi
 }
 
