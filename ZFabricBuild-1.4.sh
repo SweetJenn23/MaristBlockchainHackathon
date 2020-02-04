@@ -154,7 +154,7 @@ EOF"
 
   sudo groupadd docker
   BCUSER="$(whoami)"
-  sudo gpasswd -a $BCUSER docker
+  sudo usermod -a $BCUSER docker
   sudo systemctl restart docker
  
   echo -e "*** DONE ***\n"
@@ -189,6 +189,7 @@ build_hyperledger_fabric() {
   rm -rf fabric
   git clone -b release-1.4 https://github.com/hyperledger/fabric.git
   cd $GOPATH/src/github.com/hyperledger/fabric
+  newgrp - docker
   make native docker
   
 
