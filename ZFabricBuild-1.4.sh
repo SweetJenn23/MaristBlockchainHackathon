@@ -116,12 +116,12 @@ install_docker() {
     # Create environment file for the Docker service
     sudo touch /etc/docker/docker.conf
     sudo chmod 664 /etc/docker/docker.conf
-    sudo echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock -s overlay"' >> /etc/docker/docker.conf
+    echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock -s overlay"'| sudo tee -a /etc/docker/docker.conf > /dev/null
     sudo touch /etc/systemd/system/docker.service
     sudo chmod 664 /etc/systemd/system/docker.service
 
     # Create Docker service file
-    sudo cat > /etc/systemd/system/docker.service <<EOF
+    sudo sh -c "cat > /etc/systemd/system/docker.service <<EOF
 [Unit]
 Description=Docker Application Container Engine
 Documentation=https://docs.docker.com
@@ -133,7 +133,7 @@ EnvironmentFile=-/etc/docker/docker.conf
 
 [Install]
 WantedBy=default.target
-EOF
+EOF"
     # Start Docker Daemon
     sudo systemctl daemon-reload
     sudo systemctl enable docker.service
