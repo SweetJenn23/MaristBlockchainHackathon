@@ -152,6 +152,11 @@ EOF"
     sudo systemctl start docker.service
   fi
 
+  sudo groupadd docker
+  BCUSER="$(whoami)"
+  sudo usermod -aG docker $BCUSER
+  sudo systemctl restart docker
+
   echo -e "*** DONE ***\n"
 }
 
