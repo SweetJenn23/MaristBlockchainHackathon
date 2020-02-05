@@ -1,4 +1,4 @@
-#!/bin/bash
+\#!/bin/bash
 
 # Build out the Hyperledger Fabric environment for Linux on z Systems
 
@@ -157,14 +157,6 @@ EOF"
   sudo usermod -aG docker $BCUSER
   sudo systemctl restart docker
   echo "Your userid  was not a member of the docker group. This has been corrected."
-  #relog=true
-  # Relog needed?
-    if [[ "$relog" = true ]]; then
-     echo "Some changes have been made that require you to log out and log back in."
-     echo "Please do this now and then re-run this script."
-     exit 1
-    fi
- 
   echo -e "*** DONE ***\n"
 }
 
@@ -246,8 +238,8 @@ build_hyperledger_fabric-samples() {
   git clone -b release-1.4 https://github.com/hyperledger/fabric-samples.git
 
   cd $GOPATH/src/github.com/hyperledger/fabric-samples
-  ln -s $GOPATH/git/src/github.com/hyperledger/fabric/.build/bin bin
-  ln -s $GOPATH/git/src/github.com/hyperledger/fabric/sampleconfig config
+  ln -s $GOPATH/src/github.com/hyperledger/fabric/.build/bin bin
+  ln -s $GOPATH/src/github.com/hyperledger/fabric/sampleconfig config
 
   if [ $? != 0 ]; then
     echo -e "\nERROR: Unable to build the Hyperledger Fabric Samples.\n"
@@ -304,15 +296,15 @@ export PATH=\$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
 export XDG_CACHE_HOME=/tmp/.cache
 EOF
 
-sudo sh -c "cat <<EOF >>/etc/environment"
+sudo sh -c "cat <<EOF >>/etc/environment
 GOROOT=$GOROOT
 GOPATH=$GOPATH
-EOF
+EOF"
 
     if [ $OS_FLAVOR == "rhel" ] || [ $OS_FLAVOR == "sles" ]; then
-sudo sh -c "cat <<EOF >>/etc/environment"
+sudo sh -c "cat <<EOF >>/etc/environment
 CC=gcc
-EOF
+EOF"
     fi
   fi
 
@@ -320,11 +312,6 @@ EOF
     sudo apt -y autoremove
   fi
 
-  # Add non-root user to docker group
-  BC_USER=`whoami`
-  if [ $BC_USER != "root" ]; then
-    sudo usermod -aG docker $BC_USER
-  fi
 
   # Cleanup files and Docker images and containers
   sudo rm -rf /tmp/*
@@ -385,5 +372,8 @@ fi
 
 post_build
 
-echo -e "\n\nThe Hyperledger Fabric and its supporting components have been successfully installed.\n"
+echo -e "\nThe Hyperledger Fabric and its supporting components have been successfully installed. \n"    
+echo -e "Some changes have been made that require you to log out and log back in."
+echo -e "Please log out and log back in right now."
+
 exit 0
