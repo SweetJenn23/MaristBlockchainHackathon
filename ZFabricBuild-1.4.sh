@@ -141,7 +141,7 @@ EOF"
   elif [ $1 == "sles" ]; then
     sudo zypper --non-interactive in docker
     sudo systemctl stop docker.service
-    sed -i '/^DOCKER_OPTS/ s/\"$/ \-H tcp\:\/\/0\.0\.0\.0\:2375\"/' /etc/sysconfig/docker
+    sudo sed -i '/^DOCKER_OPTS/ s/\"$/ \-H tcp\:\/\/0\.0\.0\.0\:2375\"/' /etc/sysconfig/docker
     sudo systemctl enable docker.service
     sudo systemctl start docker.service
   else      # Setup Docker for Ubuntu
