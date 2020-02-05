@@ -1,4 +1,4 @@
-#!/bin/bash
+\#!/bin/bash
 
 # Build out the Hyperledger Fabric environment for Linux on z Systems
 
@@ -36,7 +36,7 @@ EOF
 # Install prerequisite packages for an RHEL Hyperledger build
 prereq_rhel() {
   echo -e "\nInstalling RHEL prerequisite packages\n"
-  sudo yum -y -q install git gcc gcc-c++ wget tar python-setuptools python-devel device-mapper libtool-ltdl-devel libffi-devel openssl-devel
+  sudo yum -y -q install git gcc gcc-c++ wget tar python-setuptools python-devel device-mapper libtool-ltdl-devel libffi-devel openssl-devel bzip2
   if [ $? != 0 ]; then
     echo -e "\nERROR: Unable to install pre-requisite packages.\n"
     exit 1
@@ -157,14 +157,6 @@ EOF"
   sudo usermod -aG docker $BCUSER
   sudo systemctl restart docker
   echo "Your userid  was not a member of the docker group. This has been corrected."
-  relog=true
-  # Relog needed?
-    if [[ "$relog" = true ]]; then
-     echo "Some changes have been made that require you to log out and log back in."
-     echo "Please do this now and then re-run this script."
-     exit 1
-    fi
- 
   echo -e "*** DONE ***\n"
 }
 
@@ -246,8 +238,8 @@ build_hyperledger_fabric-samples() {
   git clone -b release-1.4 https://github.com/hyperledger/fabric-samples.git
 
   cd $GOPATH/src/github.com/hyperledger/fabric-samples
-  ln -s /home/ubuntu/git/src/github.com/hyperledger/fabric/.build/bin bin
-  ln -s /home/ubuntu/git/src/github.com/hyperledger/fabric/sampleconfig config
+  ln -s $GOPATH/src/github.com/hyperledger/fabric/.build/bin bin
+  ln -s $GOPATH/src/github.com/hyperledger/fabric/sampleconfig config
 
   if [ $? != 0 ]; then
     echo -e "\nERROR: Unable to build the Hyperledger Fabric Samples.\n"
@@ -271,7 +263,7 @@ install_nodejs() {
 setup_behave() {
   echo -e "\n*** setup_behave ***\n"
   # Setup Firewall Rules if they don't already exist
-  grep -q '2375' <<< `iptables -L INPUT -nv`
+  grep -q '2375' <<< `sudo iptables -L INPUT -nv`
   if [ $? != 0 ]; then
     sudo iptables -I INPUT 1 -p tcp --dport 21212 -j ACCEPT
     sudo iptables -I INPUT 1 -p tcp --dport 7050 -j ACCEPT
@@ -297,22 +289,22 @@ post_build() {
   echo -e "\n*** post_build ***\n"
 
   if ! test -e /etc/profile.d/goroot.sh; then
-sudo cat <<EOF >/etc/profile.d/goroot.sh
+sudo sh -c "cat <<EOF >/etc/profile.d/goroot.sh
 export GOROOT=$GOROOT
 export GOPATH=$GOPATH
 export PATH=\$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
 export XDG_CACHE_HOME=/tmp/.cache
-EOF
+EOF"
 
-sudo cat <<EOF >>/etc/environment
+sudo sh -c "cat <<EOF >>/etc/environment
 GOROOT=$GOROOT
 GOPATH=$GOPATH
-EOF
+EOF"
 
     if [ $OS_FLAVOR == "rhel" ] || [ $OS_FLAVOR == "sles" ]; then
-sudo cat <<EOF >>/etc/environment
+sudo sh -c "cat <<EOF >>/etc/environment
 CC=gcc
-EOF
+EOF"
     fi
   fi
 
@@ -320,11 +312,6 @@ EOF
     sudo apt -y autoremove
   fi
 
-  # Add non-root user to docker group
-  BC_USER=`whoami`
-  if [ $BC_USER != "root" ]; then
-    sudo usermod -aG docker $BC_USER
-  fi
 
   # Cleanup files and Docker images and containers
   sudo rm -rf /tmp/*
@@ -385,5 +372,8 @@ fi
 
 post_build
 
-echo -e "\n\nThe Hyperledger Fabric and its supporting components have been successfully installed.\n"
+echo -e "\nThe Hyperledger Fabric and its supporting components have been successfully installed. \n"    
+echo -e "Some changes have been made that require you to log out and log back in."
+echo -e "Please log out and log back in right now."
+
 exit 0
