@@ -48,7 +48,7 @@ prereq_rhel() {
 # Install prerequisite packages for an SLES Hyperledger build
 prereq_sles() {
   echo -e "\nInstalling SLES prerequisite packages\n"
-  sudo zypper --non-interactive in git-core gcc make gcc-c++ patterns-sles-apparmor  python-setuptools python-devel libtool libffi48-devel libopenssl-devel bzip2
+  sudo zypper --non-interactive in git-core gcc make gcc-c++ patterns-base-apparmor  python3-setuptools python3-devel libtool libffi-devel libopenssl-devel bzip2
   if [ $? != 0 ]; then
     echo -e "\nERROR: Unable to install pre-requisite packages.\n"
     exit 1
