@@ -246,8 +246,8 @@ build_hyperledger_fabric-samples() {
   git clone -b release-1.4 https://github.com/hyperledger/fabric-samples.git
 
   cd $GOPATH/src/github.com/hyperledger/fabric-samples
-  ln -s /home/ubuntu/git/src/github.com/hyperledger/fabric/.build/bin bin
-  ln -s /home/ubuntu/git/src/github.com/hyperledger/fabric/sampleconfig config
+  ln -s $GOPATH/git/src/github.com/hyperledger/fabric/.build/bin bin
+  ln -s $GOPATH/git/src/github.com/hyperledger/fabric/sampleconfig config
 
   if [ $? != 0 ]; then
     echo -e "\nERROR: Unable to build the Hyperledger Fabric Samples.\n"
