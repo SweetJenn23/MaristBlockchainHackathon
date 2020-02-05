@@ -197,7 +197,7 @@ build_hyperledger_fabric() {
   rm -rf fabric
   git clone -b release-1.4 https://github.com/hyperledger/fabric.git
   cd $GOPATH/src/github.com/hyperledger/fabric
-  sg docker -c "make native docker"
+  make native docker
   
 
   if [ $? != 0 ]; then
@@ -222,7 +222,7 @@ build_hyperledger_fabric-ca() {
   git clone -b release-1.4 https://github.com/hyperledger/fabric-ca.git
 
   cd $GOPATH/src/github.com/hyperledger/fabric-ca
-  sg docker -c "make fabric-ca-server fabric-ca-client docker"
+  make fabric-ca-server fabric-ca-client docker
 
   if [ $? != 0 ]; then
     echo -e "\nERROR: Unable to build the Hyperledger Membership Services components.\n"
