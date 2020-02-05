@@ -48,7 +48,7 @@ prereq_rhel() {
 # Install prerequisite packages for an SLES Hyperledger build
 prereq_sles() {
   echo -e "\nInstalling SLES prerequisite packages\n"
-  zypper --non-interactive in git-core gcc make gcc-c++ patterns-sles-apparmor  python-setuptools python-devel libtool libffi48-devel libopenssl-devel bzip2
+  sudo zypper --non-interactive in git-core gcc make gcc-c++ patterns-sles-apparmor  python-setuptools python-devel libtool libffi48-devel libopenssl-devel bzip2
   if [ $? != 0 ]; then
     echo -e "\nERROR: Unable to install pre-requisite packages.\n"
     exit 1
@@ -138,7 +138,7 @@ EOF"
     sudo systemctl enable docker.service
     sudo systemctl start docker.service
   elif [ $1 == "sles" ]; then
-    zypper --non-interactive in docker
+    sudo zypper --non-interactive in docker
     sudo systemctl stop docker.service
     sed -i '/^DOCKER_OPTS/ s/\"$/ \-H tcp\:\/\/0\.0\.0\.0\:2375\"/' /etc/sysconfig/docker
     sudo systemctl enable docker.service
