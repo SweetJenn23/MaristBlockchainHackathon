@@ -289,12 +289,12 @@ post_build() {
   echo -e "\n*** post_build ***\n"
 
   if ! test -e /etc/profile.d/goroot.sh; then
-sudo sh -c "cat <<EOF >/etc/profile.d/goroot.sh"
+sudo sh -c "cat <<EOF >/etc/profile.d/goroot.sh
 export GOROOT=$GOROOT
 export GOPATH=$GOPATH
 export PATH=\$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
 export XDG_CACHE_HOME=/tmp/.cache
-EOF
+EOF"
 
 sudo sh -c "cat <<EOF >>/etc/environment
 GOROOT=$GOROOT
