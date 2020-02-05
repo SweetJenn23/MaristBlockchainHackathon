@@ -1,4 +1,4 @@
-\#!/bin/bash
+#!/bin/bash
 
 # Build out the Hyperledger Fabric environment for Linux on z Systems
 
@@ -25,7 +25,7 @@ sudo su -  (if you currently are not root)
 The script will install the following components:
     - Docker and supporting Hyperledger Fabric Docker images
     - Golang
-    - Nodejs 10.15.3
+    - Nodejs 
     - Hyperledger Fabric core components (fabric, fabric-ca, and fabric-sdk-node)
 
 
