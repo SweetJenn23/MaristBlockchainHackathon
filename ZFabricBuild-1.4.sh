@@ -19,7 +19,6 @@ After running this script, logout and then login to pick up updates to
 Hyperledger Fabric specific environment variables.
 
 To run the script:
-sudo su -  (if you currently are not root)
 <path-of-script>/ZFabricBuild-v1.4.sh
 
 The script will install the following components:
@@ -49,7 +48,7 @@ prereq_rhel() {
 # Install prerequisite packages for an SLES Hyperledger build
 prereq_sles() {
   echo -e "\nInstalling SLES prerequisite packages\n"
-  zypper --non-interactive in git-core gcc make gcc-c++ patterns-sles-apparmor  python-setuptools python-devel libtool libffi48-devel libopenssl-devel
+  zypper --non-interactive in git-core gcc make gcc-c++ patterns-sles-apparmor  python-setuptools python-devel libtool libffi48-devel libopenssl-devel bzip2
   if [ $? != 0 ]; then
     echo -e "\nERROR: Unable to install pre-requisite packages.\n"
     exit 1
@@ -254,8 +253,8 @@ build_hyperledger_fabric-samples() {
 install_nodejs() {
   echo -e "\n*** install_nodejs ***\n"
   cd /tmp
-  wget -q https://nodejs.org/dist/v8.9.4/node-v8.9.4-linux-s390x.tar.gz
-  cd /usr/local && sudo tar --strip-components=1 -xzf /tmp/node-v8.9.4-linux-s390x.tar.gz
+  wget -q https://nodejs.org/dist/v10.15.3/node-v10.15.3-linux-s390x.tar.gz
+  cd /usr/local && sudo tar --strip-components=1 -xzf /tmp/node-v10.15.3-linux-s390x.tar.gz
   echo -e "*** DONE ***\n"
 }
 
