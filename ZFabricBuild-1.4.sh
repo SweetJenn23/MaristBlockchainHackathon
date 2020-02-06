@@ -175,9 +175,12 @@ install_golang() {
 # Build the Hyperledger Fabric peer components
 build_hyperledger_fabric() {
   echo -e "\n*** build_hyperledger_fabric ***\n"
-  # Setup Environment Variables
+ 
+ # Setup Environment Variables
   export GOPATH=$HOME/git
-  export PATH=$GOROOT/bin:$PATH
+  export PATH=/opt/go/bin:$PATH
+
+  echo "Your path is:" + $PATH 
 
   # Download latest Hyperledger Fabric codebase
   if [ ! -d $GOPATH/src/github.com/hyperledger ]; then
