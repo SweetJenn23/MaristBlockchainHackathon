@@ -13,10 +13,10 @@ https://github.com/linuxone-community-cloud/technical-resources/blob/master/depl
 
 2. Once your Linux guest is running and you can ssh into the guest, copy the installation script onto your guest.
 
-'curl https://raw.githubusercontent.com/SweetJenn23/MaristBlockchainHackathon/master/ZFabricBuild-1.4.sh -o ZFabricBuild-1.4.sh'
+`curl https://raw.githubusercontent.com/SweetJenn23/MaristBlockchainHackathon/master/ZFabricBuild-1.4.sh -o ZFabricBuild-1.4.sh`
 
-3. Issue the following command to make the script executable. 'chmod u+x ZFabricBuild-1.4.sh'
-4. Run the script to build your blockchain environment. './ZFabricBuild-1.4.sh'
+3. Issue the following command to make the script executable. `chmod u+x ZFabricBuild-1.4.sh`
+4. Run the script to build your blockchain environment. `./ZFabricBuild-1.4.sh`
 
 
 
