@@ -28,7 +28,7 @@ The installation script clonded the Hyperledger Fabric's **fabric-samples** repo
 
 
 
-### Running  the"Build your first network" sample
+### Running  the "Build your first network" sample
 
 1. Run the command, `docker images`
 
@@ -36,28 +36,27 @@ The installation script clonded the Hyperledger Fabric's **fabric-samples** repo
 
 ```
 $ docker images
-REPOSITORY                                                                                             TAG                            IMAGE ID            CREATED             SIZE
-hyperledger/fabric-tools                                                                               latest                         066acf3e924b        14 hours ago        1.52GB
-hyperledger/fabric-tools                                                                               s390x-1.4.1-snapshot-87074a7   066acf3e924b        14 hours ago        1.52GB
-hyperledger/fabric-tools                                                                               s390x-latest                   066acf3e924b        14 hours ago        1.52GB
-<none>                                                                                                 <none>                         e86a7dc7f820        14 hours ago        1.58GB
-hyperledger/fabric-buildenv                                                                            latest                         16e48984c723        14 hours ago        1.47GB
-hyperledger/fabric-buildenv                                                                            s390x-1.4.1-snapshot-87074a7   16e48984c723        14 hours ago        1.47GB
-hyperledger/fabric-buildenv                                                                            s390x-latest                   16e48984c723        14 hours ago        1.47GB
-hyperledger/fabric-ccenv                                                                               latest                         c6ba694eadaf        14 hours ago        1.41GB
-hyperledger/fabric-ccenv                                                                               s390x-1.4.1-snapshot-87074a7   c6ba694eadaf        14 hours ago        1.41GB
-hyperledger/fabric-ccenv                                                                               s390x-latest                   c6ba694eadaf        14 hours ago        1.41GB
-hyperledger/fabric-orderer                                                                             latest                         62bfce2c7f41        14 hours ago        148MB
-hyperledger/fabric-orderer                                                                             s390x-1.4.1-snapshot-87074a7   62bfce2c7f41        14 hours ago        148MB
-hyperledger/fabric-orderer                                                                             s390x-latest                   62bfce2c7f41        14 hours ago        148MB
-hyperledger/fabric-peer                                                                                latest                         abe7c7fb3f24        14 hours ago        154MB
-hyperledger/fabric-peer                                                                                s390x-1.4.1-snapshot-87074a7   abe7c7fb3f24        14 hours ago        154MB
-hyperledger/fabric-peer                                                                                s390x-latest                   abe7c7fb3f24        14 hours ago        154MB
-hyperledger/fabric-zookeeper                                                                           latest                         1759dd1c97f8        2 months ago        281MB
-hyperledger/fabric-kafka                                                                               latest                         6796f1914c04        2 months ago        274MB
-hyperledger/fabric-couchdb                                                                             latest                         9930e26490d7        2 months ago        271MB
-hyperledger/fabric-baseimage                                                                           s390x-0.4.15                   957b2fbd72f9        10 months ago       1.37GB
-hyperledger/fabric-baseos                                                                              s390x-0.4.15                   d4eb16b952d6        10 months ago       120MB
+EPOSITORY                     TAG                              IMAGE ID            CREATED             SIZE
+hyperledger/fabric-ca          latest                           7742a1dfc2bf        16 seconds ago      147MB
+hyperledger/fabric-ca          s390x-1.4.5-snapshot-93f6863     7742a1dfc2bf        16 seconds ago      147MB
+hyperledger/fabric-tools       latest                           41be81b41a6e        2 minutes ago       1.41GB
+hyperledger/fabric-tools       s390x-1.4.5-snapshot-189380870   41be81b41a6e        2 minutes ago       1.41GB
+hyperledger/fabric-tools       s390x-latest                     41be81b41a6e        2 minutes ago       1.41GB
+<none>                         <none>                           53de79f7e543        2 minutes ago       1.66GB
+hyperledger/fabric-buildenv    latest                           e3998463c06f        3 minutes ago       1.33GB
+hyperledger/fabric-buildenv    s390x-1.4.5-snapshot-189380870   e3998463c06f        3 minutes ago       1.33GB
+hyperledger/fabric-buildenv    s390x-latest                     e3998463c06f        3 minutes ago       1.33GB
+hyperledger/fabric-ccenv       latest                           fe28248ceb32        4 minutes ago       1.28GB
+hyperledger/fabric-ccenv       s390x-1.4.5-snapshot-189380870   fe28248ceb32        4 minutes ago       1.28GB
+hyperledger/fabric-ccenv       s390x-latest                     fe28248ceb32        4 minutes ago       1.28GB
+hyperledger/fabric-orderer     latest                           60279cfff46c        5 minutes ago       118MB
+hyperledger/fabric-orderer     s390x-1.4.5-snapshot-189380870   60279cfff46c        5 minutes ago       118MB
+hyperledger/fabric-orderer     s390x-latest                     60279cfff46c        5 minutes ago       118MB
+hyperledger/fabric-peer        latest                           3b66e81870f0        5 minutes ago       126MB
+hyperledger/fabric-peer        s390x-1.4.5-snapshot-189380870   3b66e81870f0        5 minutes ago       126MB
+hyperledger/fabric-peer        s390x-latest                     3b66e81870f0        5 minutes ago       126MB
+hyperledger/fabric-baseimage   s390x-0.4.18                     2dac0e897f90        3 months ago        1.22GB
+hyperledger/fabric-baseos      s390x-0.4.18                     986ecfd780c6        3 months ago        78.3MB
 ```
 
 
