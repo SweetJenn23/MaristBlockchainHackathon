@@ -49,7 +49,9 @@ prereq_rhel() {
 prereq_sles() {
   echo -e "\nInstalling SLES prerequisite packages\n"
   sudo SUSEConnect -p sle-module-containers/15.1/s390x
-  sudo zypper --non-interactive in git-core gcc make gcc-c++ patterns-base-apparmor  python3-setuptools python3-devel libtool libffi-devel libopenssl-devel bzip2
+  sudo zypper addrepo https://download.opensuse.org/repositories/Cloud:Tools/SLE_12_SP3/Cloud:Tools.repo
+  sudo zypper refresh
+  sudo zypper --non-interactive in git-core gcc make gcc-c++ patterns-sles-apparmor  python3-setuptools python3-devel python3-pip gawk libtool libffi-devel libopenssl-devel bzip2
   if [ $? != 0 ]; then
     echo -e "\nERROR: Unable to install pre-requisite packages.\n"
     exit 1
