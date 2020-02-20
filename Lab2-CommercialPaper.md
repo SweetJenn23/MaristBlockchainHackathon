@@ -25,7 +25,7 @@ These three key steps of issue, buy and redeem are the main transactions in a si
 
 In diagram form it looks like this:
 
-![Commercial Paper Architecture](/Users/jenn/MaristBlockchainHackathon/img/Architecture.png)
+![Commercial Paper Architecture](img/Architecture.png)
 
 ### Steps 
 
@@ -245,7 +245,7 @@ $ docker exec cliMagnetoCorp peer chaincode install -n papercontract -v 0.0.3 -p
 
 This command uses the cliMagnetoCorp container which was configured to send commands to peer0.org1.example.com in our basic network. Its main role is to copy the papercontract source code and send it to the remote peer, ready for it to be instantiated.
 
-![Diagram of basic network.](/Users/jenn/MaristBlockchainHackathon/img/PaperNet.png)
+![Diagram of basic network.](img/PaperNet.png)
 
 7. To instantiate the contract on peer0, issue the following command:
 
@@ -308,7 +308,7 @@ Next let’s take a look at the issue application.
 
      `cat -n issue.js`
 
-    
+​    
 
     The main points are:
 
@@ -334,7 +334,7 @@ Next let’s take a look at the issue application.
 
   As we can see above on line 25, the issue application will need to load Isabella’s identity before it can create the transaction, so we need to make sure her identity is in the wallet that the issue application will use as shown in this diagram:
 
-  ![Giving Isabella permission to create a transaction.](/Users/jenn/MaristBlockchainHackathon/img/papernet_magnetoissue.png)
+  ![Giving Isabella permission to create a transaction.](img/papernet_magnetoissue.png)
 
 
 
@@ -460,7 +460,7 @@ We will now begin working in PaperNet as DigiBank.
 
 Now that we have issued paper 00001, we want to take on the persona of an employee of DigiBank who is going to buy and redeem this paper. If we look at the diagram, we can see how they will interact with the same network:
 
-![DigiBank and MagnetoCorp interacting in a network.](/Users/jenn/MaristBlockchainHackathon/img/papernet_magnetodigi.png)
+![DigiBank and MagnetoCorp interacting in a network.](img/papernet_magnetodigi.png)
 
 ### Steps
 
@@ -571,11 +571,82 @@ Now Balaji from DigiBank would like to buy the commercial paper 00001. However, 
 
    [Download VSCode](https://code.visualstudio.com/download)
 
-2. Open VSCode. From the "Welcome" screen, select **New File**.
+2. To work with the sample code, install Git to your laptop. [Install Git.](https://help.github.com/en/github/getting-started-with-github/set-up-git#setting-up-git)
 
-   ![Select New File.](/Users/jenn/MaristBlockchainHackathon/img/NewFile.png)
+   * Install Git
+   * Setup your username in Git (if you don't have one already)
+   * Set your commit email address in Git (if you don't have one already)
 
-3. 
+3. It's also highly recommended that you install GitHub Desktop. This makes it easy to push changes from your machine to the GitHub repository. [Download and setup GitHub Desktop](https://help.github.com/en/desktop/getting-started-with-github-desktop/installing-github-desktop)
+
+4. In a browser, go to the  [Hyperledger Fabric fabric-samples repository.](https://github.com/hyperledger/fabric-samples)
+
+5. Select branch **release- 1.4** from the drop down menu. This will insure that we are working with the appropriate samples for our version of Hyperledger Fabric.
+
+   ![Select release-1.4 for the branch.](img/release1.4.png)
+
+6. Select **Fork** to copy the repository to your own repository.
+
+   ![Select Fork.](img/fork.png)
+
+7. In your repository in the browser, select **Clone or download** and the **copy** button to get the URL to clone your repository to your laptop.
+![Copy repository URL for cloning.](img/CopyClone.png)
+  
+8. In a terminal on your laptop, navigate to a directory where you would like to clone your repository to. Once you're there, enter the command `git clone https://github.com/xxxxxxxx/fabric-samples.git` where **https://github.com/xxxxxxxx/fabric-samples.git** is what you copied in the prior step.
+
+9. Open VSCode. From the "Welcome" screen, select **Open folder**.
+
+   ![Select New File.](img/NewFile.png)
+
+10. In the file browser dialog, navigate to **.../fabric-samples/commercial-paper/organization/digibank/contract. Select **Add**.
+
+   ![Navigate to the folder and select Add.](img/libworkspace.png)
+
+11. Click **Don't save** on the pop-up prompt about making the folder a workspace.
+
+    ![Click Don't save.](img/dontsave.png)
+
+12. Click on the **papercontract.js** file in the contract folder to open it for editing:
+
+    ![Click on papercontract.js](img/papercontract.png)
+
+13. We are going to create a new transaction called **getPaper**. It is going to be a simple transaction that just returns the paper that was requested as a parameter. We are going to insert it between the existing **instantiate** and **issue** transactions starting on **line 54**.
+
+Note: It is recommended that you copy in the code and paste at line 54 to avoid any typos.
+
+```
+/**
+* Get commercial paper
+* @param {Context} ctx the transaction context
+* @param {String} issuer commercial paper issuer
+* @param {Integer} paperNumber paper number for this issuer
+*/
+async getPaper(ctx, issuer, paperNumber) {
+  try {
+    console.log('getPaper for: ' + issuer + ' ' + paperNumber);
+    let paperKey = CommercialPaper.makeKey([issuer, paperNumber]);
+    let paper = await ctx.paperList.getPaper(paperKey);
+    return paper;
+  } catch(e) {
+    throw new Error('Paper: ' + paperNumber + 'absentfor' + issuer);
+  }
+}
+```
+
+![Paste the getPaper code.](img/pastegetpaper.png)
+
+
+
+14. **Save** your code addition in VSCode. You can use CTRL + S (Windows/Linux), CMD + S (Mac) or go to File -> Save. 
+
+15. In VSCode, click on **package.json**. We will edit the **version number** before pushing our changes to GitHub and installing on the network.
+
+    ![Click on package.json](img/jsonpackage.png)
+
+16. Change **Line 2** to say **papercontract** for the name, if needed, and increment the version to **0.0.4**. **Save** your changes.
+![Increment the version.](img/changeversion.png)
+
+17. 
 
 
 
