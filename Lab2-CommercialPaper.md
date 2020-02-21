@@ -876,9 +876,13 @@ added 323 packages in 84.427s
 
 ```
 
-32. In the same  terminal, run the new application. This allows **Balaji** from **DigiBank** to see the commercial paper to decide if he wants it before buying it.
-    `node getPaper.js`
+32. Now that we've updated the code, we need to re-add **Balaji's** credentials. Run the following command:
     
+    `node addToWallet.js`
+    
+33. In the same  terminal, run the new application. This allows **Balaji** from **DigiBank** to see the commercial paper to decide if he wants it before buying it.
+    `node getPaper.js`
+
     ```
     $ node getPaper.js
     Connect to Fabric gateway.
@@ -899,8 +903,8 @@ added 323 packages in 84.427s
     Disconnect from Fabric gateway.
     getPaper program complete.
     ```
-    
-33. We can see that the paper **00001** was successfully retrieved and that its state is currently **ISSUED**. **Balaji** is now ready to buy the paper.
+
+34. We can see that the paper **00001** was successfully retrieved and that its state is currently **ISSUED**. **Balaji** is now ready to buy the paper.
 
 To buy the paper, run the command `nody buy.js`
 ```    
