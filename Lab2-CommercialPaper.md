@@ -225,36 +225,36 @@ Next we will begin to deploy the PaperNet smart contract. Before we deploy the c
 
 ![Select release-1.4 for the branch.](img/release1.4.png)
 
-7. Select **Fork** to copy the repository to your own repository.
+8. Select **Fork** to copy the repository to your own repository.
 
-   ![Select Fork.](img/fork.png)
+![Select Fork.](img/fork.png)
 
-8. In your repository in the browser, select **Clone or download** and the **copy** button to get the URL to clone your repository to your laptop.
+9. In your repository in the browser, select **Clone or download** and the **copy** button to get the URL to clone your repository to your laptop.
    ![Copy repository URL for cloning.](img/CopyClone.png)
 
-9. In a terminal on your laptop, navigate to a directory on your laptop where you would like to clone your repository to. Once you're there, enter the command `git clone -b release-1.4 https://github.com/xxxxxxxx/fabric-samples.git` where **https://github.com/xxxxxxxx/fabric-samples.git** is what you copied in the prior step.
+10. In a terminal on your laptop, navigate to a directory on your laptop where you would like to clone your repository to. Once you're there, enter the command `git clone -b release-1.4 https://github.com/xxxxxxxx/fabric-samples.git` where **https://github.com/xxxxxxxx/fabric-samples.git** is what you copied in the prior step.
 
-10. Back in a terminal connected to your LinuxONE Community Cloud instance, change directory to fabric-samples. `cd ~/git/src/github.com/hyperledger/fabric-samples/`
+11. Back in a terminal connected to your LinuxONE Community Cloud instance, change directory to fabric-samples. `cd ~/git/src/github.com/hyperledger/fabric-samples/`
 
-11. We'll now change this cloned directory to work with our fork of fabric-samples. This will allow us to push changes to the sample code and pick it up on LinuxONE. In the terminal enter the command below:
+12. We'll now change this cloned directory to work with our fork of fabric-samples. This will allow us to push changes to the sample code and pick it up on LinuxONE. In the terminal enter the command below:
 
-    `git remote add fork https://github.com/xxxxxxxxx/fabric-samples.git`, where  **https://github.com/xxxxxxxx/fabric-samples.git** is what you copied in the browser.
+`git remote add fork https://github.com/xxxxxxxxx/fabric-samples.git`, where  **https://github.com/xxxxxxxx/fabric-samples.git** is what you copied in the browser.
 
-12. Let's make sure we have the latest version of the repository.
+13. Let's make sure we have the latest version of the repository.
 
-    `git fetch fork`
+`git fetch fork`
 
-13. Now we need to make sure that we will only be working with the branch release-1.4 of the repository as that correpsonds to our version of Hyperledger Fabric.
+14. Now we need to make sure that we will only be working with the branch release-1.4 of the repository as that correpsonds to our version of Hyperledger Fabric.
 
-    `git branch -u fork/release-1.4`
+`git branch -u fork/release-1.4`
 
-14. Change directory to the magnetocorp/contract folder:
+15. Change directory to the magnetocorp/contract folder:
     `cd ~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/contract/`
-    
-15. Let's take a look at the smart contract papercontract.js code, you can do it either from a terminal (`cat -n lib/papercontract.js`) or from the browser, follow the link:
+
+16. Let's take a look at the smart contract papercontract.js code, you can do it either from a terminal (`cat -n lib/papercontract.js`) or from the browser, follow the link:
     https://github.com/hyperledger/fabric-samples/blob/release-1.4/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js
 
-16. Let’s expand the issue transaction and take a look so we can see what it will do.
+17. Let’s expand the issue transaction and take a look so we can see what it will do.
 
 * **Line 68** --  creates a new CommercialPaper object from the parameters passed in using the static createInstance method on the CommercialPaper class. This class is defined in the separate “paper.js” file which is also if the lib folder alongside papercontract.js if you want to take a look at this method.
 * **Line 71** -- moves the newly created paper into the ISSUED state and on line 74 it has its owner set from the parameters passed in.
@@ -263,7 +263,7 @@ Next we will begin to deploy the PaperNet smart contract. Before we deploy the c
 
 
 
-17. Now we are going to install the papercontract onto a peer in the network. In your terminal window issue the following command:
+18. Now we are going to install the papercontract onto a peer in the network. In your terminal window issue the following command:
 
 ```
 docker exec cliMagnetoCorp peer chaincode install -n papercontract -v 0.0.3 -p /opt/gopath/src/github.com/contract -l node
@@ -288,7 +288,7 @@ This command uses the cliMagnetoCorp container which was configured to send comm
 
 ![Diagram of basic network.](img/PaperNet.png)
 
-18. To instantiate the contract on peer0, issue the following command:
+19. To instantiate the contract on peer0, issue the following command:
 
 ```
 docker exec cliMagnetoCorp peer chaincode instantiate -n papercontract -v 0.0.3 -l node -c '{"Args":["org.papernet.commercialpaper:instantiate"]}' -C mychannel -P "AND ('Org1MSP.member')"
@@ -297,7 +297,7 @@ docker exec cliMagnetoCorp peer chaincode instantiate -n papercontract -v 0.0.3 
 <u>Note:</u> As before, the above command must be entered as a single line. If you copy and paste it from here, be sure to enter it as a single line. 
 <u>Note 2:</u> remember, the flags are case-sensitive and the flag “-l” is a letter “l” for language and not a number one.
 
-19. When the command line returns, enter `docker ps`. You should see the new container, **dev-peer0.org1.example.com-papercontract-0** with the chaincode.
+20. When the command line returns, enter `docker ps`. You should see the new container, **dev-peer0.org1.example.com-papercontract-0** with the chaincode.
 
 ```
 $ docker ps
@@ -318,7 +318,7 @@ This command also uses the cliMagnetoCorp container to cause the contract to bec
 
 
 
-20. Now the contract is up and running, it is time to start running transactions, and to start things moving, MagnetoCorp is going to run an application to issue the first commercial paper on the PaperNet network. To do this we are going to act as Isabella, an employee of MagnetoCorp.
+21. Now the contract is up and running, it is time to start running transactions, and to start things moving, MagnetoCorp is going to run an application to issue the first commercial paper on the PaperNet network. To do this we are going to act as Isabella, an employee of MagnetoCorp.
 
  
 
@@ -328,9 +328,9 @@ Change to the folder that contains the issue application.
 
 
 
-21. Run the ls command to see the files in this folder: `ls`
+22. Run the ls command to see the files in this folder: `ls`
 
-  
+
 
 We see that there are several files:
 
@@ -343,7 +343,7 @@ addToWallet.js  issue.js  package-lock.json  package.json
 
 Next let’s take a look at the issue application.
 
-22. Take a look at the code for the issue application.
+23. Take a look at the code for the issue application.
 
 `cat -n issue.js`
 
@@ -379,7 +379,7 @@ The main points are:
 
 However, before we can run the application, we need to download the dependencies listed in the package.json file from npm
 
-23. Switch back to terminal and issue this command:
+24. Switch back to terminal and issue this command:
     `npm install`
 
 Note: This will take a while to download the dependencies and you may see a slightly different output to that shown below.
@@ -424,7 +424,7 @@ added 323 packages in 90.961s
 
 
 
-24. When the download has finished, if you run `ls` again, you will see a new node_modules folder has been created. It is the node_modules folder that contains the dependencies.
+25. When the download has finished, if you run `ls` again, you will see a new node_modules folder has been created. It is the node_modules folder that contains the dependencies.
 
 ```
 $ ls
@@ -433,12 +433,12 @@ addToWallet.js  issue.js  node_modules  package.json  package-lock.json
 
 
 
-25. Now we are almost ready to issue a new commercial paper, we just need to load Isabella’s digital certificate into the wallet before we can use it.  To do this we run the following application:
+26. Now we are almost ready to issue a new commercial paper, we just need to load Isabella’s digital certificate into the wallet before we can use it.  To do this we run the following application:
     `node addToWallet.js`
 
 <u>Note:</u> addToWallet.js simply copies an identity from the basic-network to our wallet location for use by other applications.
 
-26. Run this command to see the contents of the newly created wallet:
+27. Run this command to see the contents of the newly created wallet:
     `ls -al ../identity/user/isabella/wallet/`
 
 ```
@@ -453,7 +453,7 @@ drwxr-xr-x 2 linux1 users 4096 Feb 18 20:03 User1@org1.example.com
 
 Now you can see the User1@org1.example.com folder which is used by the issue application. 
 
-27. We can run another command to see the three files that make up the identity itself:
+28. We can run another command to see the three files that make up the identity itself:
     `ls -al ../identity/user/isabella/wallet/User1@org1.example.com`
 
 ```
@@ -470,7 +470,7 @@ drwxr-xr-x 3 linux1 users 4096 Feb 18 20:03 ..
 
 These files consist of a private key for signing transactions, a public key linked to the private key and a file that contains both metadata and a certificate for our user.
 
-28. Now we can *finally* issue the commercial paper by running:
+29. Now we can *finally* issue the commercial paper by running:
 
 `node issue.js`
 
