@@ -938,6 +938,16 @@ Redeem program complete.
 ```
 Again the transaction has run smoothly, and the paper was redeemed with MagnetoCorp.
 
-* End of the lab *
+**End of the lab**
+
+### Summary
+
+In this lab, you have completed the following:
+
+*  Edited application code and contracts with VSCode and used GitHub to move it to your LinuxONE Server
+* Created wallets for two individuals at two different companies
+* Started up a basic-network that is required for the commercial-paper example
+
+
 
 © 2020 International Business Machines Corporation. No part of this document may be reproduced or transmitted in any form without written permission from IBM.
