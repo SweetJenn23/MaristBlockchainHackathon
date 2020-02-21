@@ -186,12 +186,16 @@ Next, we are going to act as a MagnetoCorp administrator again and interact with
 
 ### Steps
 
-1. The Fabric commands we need to use are in the fabric-tools docker image, so let’s start it running by issuing this docker-compose command to start the container:
-   `dcker-compose -f docker-compose.yml up -d cliMagnetoCorp`
+1. Change directory to ~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/configuration/cli/.
+
+   `~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/configuration/cli`
+
+2. The Fabric commands we need to use are in the fabric-tools docker image, so let’s start it running by issuing this docker-compose command to start the container:
+   `docker-compose -f docker-compose.yml up -d cliMagnetoCorp`
 
 
 
-2. If we run the, `docker ps`, command again we should see that the new fabric-tools container is running. 
+3. If we run the, `docker ps`, command again we should see that the new fabric-tools container is running. 
 
 ```
 $ docker ps
@@ -207,19 +211,19 @@ e23fd6c6cedc        hyperledger/fabric-orderer   "orderer"                25 min
 
 Next we will begin to deploy the PaperNet smart contract. Before we deploy the contract, we are going to create our own forked repository to work with later in this lab.
 
-3. To work with the sample code, install Git to your laptop. [Install Git.](https://help.github.com/en/github/getting-started-with-github/set-up-git#setting-up-git)
-  
-   * Install Git
-   * Setup your username in Git (if you don't have one already)
-   * Set your commit email address in Git (if you don't have one already)
-   
-4. It's also highly recommended that you install GitHub Desktop. This makes it easy to push changes from your machine to the GitHub repository. [Download and setup GitHub Desktop](https://help.github.com/en/desktop/getting-started-with-github-desktop/installing-github-desktop)
+4. To work with the sample code, install Git to your laptop. [Install Git.](https://help.github.com/en/github/getting-started-with-github/set-up-git#setting-up-git)
 
-5. In a browser, go to the  [Hyperledger Fabric fabric-samples repository.](https://github.com/hyperledger/fabric-samples)
+* Install Git
+* Setup your username in Git (if you don't have one already)
+* Set your commit email address in Git (if you don't have one already)
 
-6. Select branch **release- 1.4** from the drop down menu. This will insure that we are working with the appropriate samples for our version of Hyperledger Fabric.
+5. It's also highly recommended that you install GitHub Desktop. This makes it easy to push changes from your machine to the GitHub repository. [Download and setup GitHub Desktop](https://help.github.com/en/desktop/getting-started-with-github-desktop/installing-github-desktop)
 
-   ![Select release-1.4 for the branch.](img/release1.4.png)
+6. In a browser, go to the  [Hyperledger Fabric fabric-samples repository.](https://github.com/hyperledger/fabric-samples)
+
+7. Select branch **release- 1.4** from the drop down menu. This will insure that we are working with the appropriate samples for our version of Hyperledger Fabric.
+
+![Select release-1.4 for the branch.](img/release1.4.png)
 
 7. Select **Fork** to copy the repository to your own repository.
 
