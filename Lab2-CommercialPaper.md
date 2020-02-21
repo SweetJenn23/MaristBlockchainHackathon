@@ -841,7 +841,7 @@ ce099d3ff248        hyperledger/fabric-ca                                       
 e23fd6c6cedc        hyperledger/fabric-orderer                                                                                        "orderer"                2 days ago          Up 2 days           0.0.0.0:7050->7050/tcp                           orderer.example.com
 ```
 31. Now that the chaincode is installed. We need to install the application for DigiBank to use. 
-`cd ~/my-fabric-samples/commercial-paper/organization/digibank/application`
+`cd ~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/digibank/application`
 
 Now we'll need to install the updated code.
   
