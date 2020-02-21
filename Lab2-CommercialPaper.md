@@ -842,8 +842,11 @@ e23fd6c6cedc        hyperledger/fabric-orderer                                  
 ```
 31. Now that the chaincode is installed. We need to install the application for DigiBank to use. 
 `cd ~/my-fabric-samples/commercial-paper/organization/digibank/application`
-`npm install`
 
+Now we'll need to install the updated code.
+  
+  `npm install`
+  
     
 ```
 $ cd ~/my-fabric-samples/commercial-paper/organization/digibank/application 
