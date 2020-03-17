@@ -394,7 +394,7 @@ fi
 
 build_hyperledger_fabric $OS_FLAVOR
 build_hyperledger_fabric-ca $OS_FLAVOR
-build fabric-baseimage $OS_FLAVOR
+build_fabric-baseimage $OS_FLAVOR
 build_hyperledger_fabric-samples $OS_FLAVOR
 
 
