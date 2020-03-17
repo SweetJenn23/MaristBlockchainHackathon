@@ -5,7 +5,7 @@ To get setup for the weekend, complete the following steps:
 
 
 
-1. Follow the steps in the link to request for LinuxONE server. You can request either RHEL or SLES for your operating system -- your pick!
+1. Follow the steps in the link to request for LinuxONE server. Request SLES for your operating system.
 
 https://github.com/linuxone-community-cloud/technical-resources/blob/master/deploy-virtual-server.md
 
