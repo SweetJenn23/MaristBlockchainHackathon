@@ -231,6 +231,30 @@ build_hyperledger_fabric-ca() {
 #  echo -e "*** DONE ***\n"
 }
 
+# Build the Hyperledger Fabric Baseimage
+build_fabric-baseimage() {
+  echo -e "\n*** build_fabric-baseimage ***\n"
+
+  # Download latest Hyperledger Fabric codebase
+  if [ ! -d $GOPATH/src/github.com/hyperledger ]; then
+    mkdir -p $GOPATH/src/github.com/hyperledger
+  fi
+  cd $GOPATH/src/github.com/hyperledger
+  # Delete fabric directory, if it exists
+  rm -rf fabric-baseimage
+  git clone https://github.com/hyperledger/fabric-baseimage.git
+
+  cd $GOPATH/src/github.com/hyperledger/fabric-baseimage
+  sg docker -c "make couchdb kafka zookeeper docker"
+
+  if [ $? != 0 ]; then
+    echo -e "\nERROR: Unable to build the Fabric Baseimage components.\n"
+    exit 1
+  fi
+
+#  echo -e "*** DONE ***\n"
+}
+
 # Build the Hyperledger Fabric Samples
 build_hyperledger_fabric-samples() {
   echo -e "\n*** build_hyperledger_fabric-samples ***\n"
@@ -370,6 +394,7 @@ fi
 
 build_hyperledger_fabric $OS_FLAVOR
 build_hyperledger_fabric-ca $OS_FLAVOR
+Build oabric-baseimage $OS_FLAVOR
 build_hyperledger_fabric-samples $OS_FLAVOR
 
 
