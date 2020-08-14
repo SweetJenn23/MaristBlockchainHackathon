@@ -50,9 +50,9 @@ prereq_sles() {
   echo -e "\nInstalling SLES prerequisite packages\n"
   sudo SUSEConnect -p sle-module-containers/15.1/s390x
   sudo zypper --non-interactive addrepo https://download.opensuse.org/repositories/Cloud:Tools/SLE_12_SP3/Cloud:Tools.repo
+  sudo zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:tbjorklund/SLE_12_SP4/home:tbjorklund.repo
   sudo zypper refresh
-  sudo zypper --non-interactive in git-core gcc make gcc-c++ patterns-sles-apparmor  python3-setuptools python3-devel python3-pip gawk libtool libffi-devel libopenssl-devel bzip2 python3-PyYAML
-  sudo zypper --non-interactive in git-core gcc make gcc-c++ patterns-sles-apparmor python3-setuptools python3-devel python3-pip gawk libtool libffi-devel libopenssl-devel bzip python3-PyYAML
+  sudo zypper --non-interactive in git-core gcc make gcc-c++ patterns-sles-apparmor  python3 python3-setuptools python3-devel python3-pip gawk libtool libffi-devel libopenssl-devel bzip2 python3-PyYAML
   sudo pip3 install docker-compose==1.25.3
   if [ $? != 0 ]; then
     echo -e "\nERROR: Unable to install pre-requisite packages.\n"
@@ -231,6 +231,30 @@ build_hyperledger_fabric-ca() {
 #  echo -e "*** DONE ***\n"
 }
 
+# Build the Hyperledger Fabric Baseimage
+build_fabric-baseimage() {
+  echo -e "\n*** build_fabric-baseimage ***\n"
+
+  # Download latest Hyperledger Fabric codebase
+  if [ ! -d $GOPATH/src/github.com/hyperledger ]; then
+    mkdir -p $GOPATH/src/github.com/hyperledger
+  fi
+  cd $GOPATH/src/github.com/hyperledger
+  # Delete fabric directory, if it exists
+  rm -rf fabric-baseimage
+  git clone -b v0.4.20 https://github.com/hyperledger/fabric-baseimage.git
+
+  cd $GOPATH/src/github.com/hyperledger/fabric-baseimage
+  sg docker -c "make couchdb kafka zookeeper docker"
+
+  if [ $? != 0 ]; then
+    echo -e "\nERROR: Unable to build the Fabric Baseimage components.\n"
+    exit 1
+  fi
+
+#  echo -e "*** DONE ***\n"
+}
+
 # Build the Hyperledger Fabric Samples
 build_hyperledger_fabric-samples() {
   echo -e "\n*** build_hyperledger_fabric-samples ***\n"
@@ -368,6 +392,7 @@ else
   export GOROOT=/opt/go
 fi
 
+build_fabric-baseimage $OS_FLAVOR
 build_hyperledger_fabric $OS_FLAVOR
 build_hyperledger_fabric-ca $OS_FLAVOR
 build_hyperledger_fabric-samples $OS_FLAVOR

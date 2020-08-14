@@ -25,7 +25,7 @@ These three key steps of issue, buy and redeem are the main transactions in a si
 
 In diagram form it looks like this:
 
-![Commercial Paper Architecture](/Users/jenn/MaristBlockchainHackathon/img/Architecture.png)
+![Commercial Paper Architecture](img/Architecture.png)
 
 ### Steps 
 
@@ -186,12 +186,16 @@ Next, we are going to act as a MagnetoCorp administrator again and interact with
 
 ### Steps
 
-1. The Fabric commands we need to use are in the fabric-tools docker image, so let’s start it running by issuing this docker-compose command to start the container:
+1. Change directory to ~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/configuration/cli/.
+
+   `~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/configuration/cli`
+
+2. The Fabric commands we need to use are in the fabric-tools docker image, so let’s start it running by issuing this docker-compose command to start the container:
    `docker-compose -f docker-compose.yml up -d cliMagnetoCorp`
 
 
 
-2. If we run the, `docker ps`, command again we should see that the new fabric-tools container is running. 
+3. If we run the, `docker ps`, command again we should see that the new fabric-tools container is running. 
 
 ```
 $ docker ps
@@ -205,32 +209,69 @@ e23fd6c6cedc        hyperledger/fabric-orderer   "orderer"                25 min
 
 
 
-Next we will begin to deploy the PaperNet smart contract.
+Next we will begin to deploy the PaperNet smart contract. Before we deploy the contract, we are going to create our own forked repository to work with later in this lab.
 
-3. Change directory to the magnetocorp/contract folder:
-   `cd ../../contract/`
+4. To work with the sample code, install Git to your laptop. [Install Git.](https://help.github.com/en/github/getting-started-with-github/set-up-git#setting-up-git)
+
+* Install Git
+* Setup your username in Git (if you don't have one already)
+* Set your commit email address in Git (if you don't have one already)
+
+5. It's also highly recommended that you install GitHub Desktop. This makes it easy to push changes from your machine to the GitHub repository. [Download and setup GitHub Desktop](https://help.github.com/en/desktop/getting-started-with-github-desktop/installing-github-desktop)
+
+6. In a browser, go to the  [Hyperledger Fabric fabric-samples repository.](https://github.com/hyperledger/fabric-samples)
+
+7. Select branch **release- 1.4** from the drop down menu. This will insure that we are working with the appropriate samples for our version of Hyperledger Fabric.
+
+![Select release-1.4 for the branch.](img/release1.4.png)
+
+8. Select **Fork** to copy the repository to your own repository.
+
+![Select Fork.](img/fork.png)
+
+9. In your repository in the browser, select **Clone or download** and the **copy** button to get the URL to clone your repository to your laptop.
+   ![Copy repository URL for cloning.](img/CopyClone.png)
+
+10. In a terminal on your laptop, navigate to a directory on your laptop where you would like to clone your repository to. Once you're there, enter the command `git clone -b release-1.4 https://github.com/xxxxxxxx/fabric-samples.git` where **https://github.com/xxxxxxxx/fabric-samples.git** is what you copied in the prior step.
+
+11. Back in a terminal connected to your LinuxONE Community Cloud instance, change directory to fabric-samples. `cd ~/git/src/github.com/hyperledger/fabric-samples/`
+
+12. We'll now change this cloned directory to work with our fork of fabric-samples. This will allow us to push changes to the sample code and pick it up on LinuxONE. In the terminal enter the command below:
+
+`git remote add fork https://github.com/xxxxxxxxx/fabric-samples.git`, where  **https://github.com/xxxxxxxx/fabric-samples.git** is what you copied in the browser.
+
+13. Let's make sure we have the latest version of the repository.
+
+`git fetch fork`
+
+14. Now we need to make sure that we will only be working with the branch release-1.4 of the repository as that correpsonds to our version of Hyperledger Fabric.
+
+`git branch -u fork/release-1.4`
+
+15. Change directory to the magnetocorp/contract folder:
+    `cd ~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/contract/`
+
+16. Let's take a look at the smart contract papercontract.js code, you can do it either from a terminal (`cat -n lib/papercontract.js`) or from the browser, follow the link:
+    https://github.com/hyperledger/fabric-samples/blob/release-1.4/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js
+
+17. Let’s expand the issue transaction and take a look so we can see what it will do.
+
+* **Line 68** --  creates a new CommercialPaper object from the parameters passed in using the static createInstance method on the CommercialPaper class. This class is defined in the separate “paper.js” file which is also if the lib folder alongside papercontract.js if you want to take a look at this method.
+* **Line 71** -- moves the newly created paper into the ISSUED state and on line 74 it has its owner set from the parameters passed in.
+* **Line 77** --  adds the paper to a “paperList” which is responsible for storing the state of the paper in the world state. This is defined in the paperlist.js file if you want to take a deeper look.
+* **Line 80** -- then returns the paper to the client who called this transaction.
 
 
-4. Let's take a look at the smart contract papercontract.js code, you can do it either from a terminal (`cat -n lib/papercontract.js`) or from the browser, follow the link:
-   https://github.com/hyperledger/fabric-samples/blob/release-1.4/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js
 
-5. Let’s expand the issue transaction and take a look so we can see what it will do.
-   * **Line 68** --  creates a new CommercialPaper object from the parameters passed in using the static createInstance method on the CommercialPaper class. This class is defined in the separate “paper.js” file which is also if the lib folder alongside papercontract.js if you want to take a look at this method.
-   * **Line 71** -- moves the newly created paper into the ISSUED state and on line 74 it has its owner set from the parameters passed in.
-   * **Line 77** --  adds the paper to a “paperList” which is responsible for storing the state of the paper in the world state. This is defined in the paperlist.js file if you want to take a deeper look.
-   * **Line 80** -- then returns the paper to the client who called this transaction.
+18. Now we are going to install the papercontract onto a peer in the network. In your terminal window issue the following command:
 
+```
+docker exec cliMagnetoCorp peer chaincode install -n papercontract -v 0.0.3 -p /opt/gopath/src/github.com/contract -l node
+```
 
+<u>Note:</u> The above command must be entered as a single line. Be sure to copy /paste and enter it as a single line.
 
-6. Now we are going to install the papercontract onto a peer in the network. In your terminal window issue the following command:
-
-   ```
-   docker exec cliMagnetoCorp peer chaincode install -n papercontract -v 0.0.3 -p /opt/gopath/src/github.com/contract -l node
-   ```
-
-   <u>Note:</u> The above command must be entered as a single line. Be sure to copy /paste and enter it as a single line.
-
-   <u>Note 2:</u> In the above command, the flags are case-sensitive and the flag “-l” is a letter “l” for language and not a number one.
+<u>Note 2:</u> In the above command, the flags are case-sensitive and the flag “-l” is a letter “l” for language and not a number one.
 
 The output should be something like this one:
 
@@ -245,20 +286,18 @@ $ docker exec cliMagnetoCorp peer chaincode install -n papercontract -v 0.0.3 -p
 
 This command uses the cliMagnetoCorp container which was configured to send commands to peer0.org1.example.com in our basic network. Its main role is to copy the papercontract source code and send it to the remote peer, ready for it to be instantiated.
 
-![Diagram of basic network.](/Users/jenn/MaristBlockchainHackathon/img/PaperNet.png)
+![Diagram of basic network.](img/PaperNet.png)
 
-7. To instantiate the contract on peer0, issue the following command:
+19. To instantiate the contract on peer0, issue the following command:
 
-   
+```
+docker exec cliMagnetoCorp peer chaincode instantiate -n papercontract -v 0.0.3 -l node -c '{"Args":["org.papernet.commercialpaper:instantiate"]}' -C mychannel -P "AND ('Org1MSP.member')"
+```
 
-   ```
-   docker exec cliMagnetoCorp peer chaincode instantiate -n papercontract -v 0.0.3 -l node -c '{"Args":["org.papernet.commercialpaper:instantiate"]}' -C mychannel -P "AND ('Org1MSP.member')"
-   ```
+<u>Note:</u> As before, the above command must be entered as a single line. If you copy and paste it from here, be sure to enter it as a single line. 
+<u>Note 2:</u> remember, the flags are case-sensitive and the flag “-l” is a letter “l” for language and not a number one.
 
-   <u>Note:</u> As before, the above command must be entered as a single line. If you copy and paste it from here, be sure to enter it as a single line. 
-   <u>Note 2:</u> remember, the flags are case-sensitive and the flag “-l” is a letter “l” for language and not a number one.
-
-8. When the command line returns, enter `docker ps`. You should see the new container, **dev-peer0.org1.example.com-papercontract-0** with the chaincode.
+20. When the command line returns, enter `docker ps`. You should see the new container, **dev-peer0.org1.example.com-papercontract-0** with the chaincode.
 
 ```
 $ docker ps
@@ -279,21 +318,21 @@ This command also uses the cliMagnetoCorp container to cause the contract to bec
 
 
 
-9. Now the contract is up and running, it is time to start running transactions, and to start things moving, MagnetoCorp is going to run an application to issue the first commercial paper on the PaperNet network. To do this we are going to act as Isabella, an employee of MagnetoCorp.
+21. Now the contract is up and running, it is time to start running transactions, and to start things moving, MagnetoCorp is going to run an application to issue the first commercial paper on the PaperNet network. To do this we are going to act as Isabella, an employee of MagnetoCorp.
 
-   
+ 
 
-   Change to the folder that contains the issue application. 
+Change to the folder that contains the issue application. 
 
-   `cd ../application/`
+`cd ../application/`
 
 
 
-10. Run the ls command to see the files in this folder: `ls`
+22. Run the ls command to see the files in this folder: `ls`
 
-    
 
-    We see that there are several files:
+
+We see that there are several files:
 
 ```
 $ ls
@@ -304,13 +343,13 @@ addToWallet.js  issue.js  package-lock.json  package.json
 
 Next let’s take a look at the issue application.
 
-11. Take a look at the code for the issue application.
+23. Take a look at the code for the issue application.
 
-     `cat -n issue.js`
+`cat -n issue.js`
 
-    
 
-    The main points are:
+
+The main points are:
 
 * Lines 18 - 21: Import various dependencies
 
@@ -334,72 +373,72 @@ Next let’s take a look at the issue application.
 
   As we can see above on line 25, the issue application will need to load Isabella’s identity before it can create the transaction, so we need to make sure her identity is in the wallet that the issue application will use as shown in this diagram:
 
-  ![Giving Isabella permission to create a transaction.](/Users/jenn/MaristBlockchainHackathon/img/papernet_magnetoissue.png)
+  ![Giving Isabella permission to create a transaction.](img/papernet_magnetoissue.png)
 
 
 
 However, before we can run the application, we need to download the dependencies listed in the package.json file from npm
 
-12. Switch back to terminal and issue this command:
+24. Switch back to terminal and issue this command:
     `npm install`
 
-    Note: This will take a while to download the dependencies and you may see a slightly different output to that shown below.
+Note: This will take a while to download the dependencies and you may see a slightly different output to that shown below.
 
-    ```
-    $ npm install
-    
-    > pkcs11js@1.0.18 install /home/linux1/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application/node_modules/pkcs11js
-    > node-gyp rebuild
-    
-    make: Entering directory '/home/linux1/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application/node_modules/pkcs11js/build'
-      CXX(target) Release/obj.target/pkcs11/src/main.o
-      CXX(target) Release/obj.target/pkcs11/src/dl.o
-      CXX(target) Release/obj.target/pkcs11/src/const.o
-      .
-      .
-      .
-      . (output not shown)
-      .
-      .
-      CXX(target) Release/obj.target/grpc_node/ext/byte_buffer.o
-      CXX(target) Release/obj.target/grpc_node/ext/call.o
-      CXX(target) Release/obj.target/grpc_node/ext/call_credentials.o
-      CXX(target) Release/obj.target/grpc_node/ext/channel.o
-      CXX(target) Release/obj.target/grpc_node/ext/channel_credentials.o
-      CXX(target) Release/obj.target/grpc_node/ext/completion_queue.o
-      CXX(target) Release/obj.target/grpc_node/ext/node_grpc.o
-      CXX(target) Release/obj.target/grpc_node/ext/server.o
-      CXX(target) Release/obj.target/grpc_node/ext/server_credentials.o
-      CXX(target) Release/obj.target/grpc_node/ext/slice.o
-      CXX(target) Release/obj.target/grpc_node/ext/timeval.o
-      SOLINK_MODULE(target) Release/obj.target/grpc_node.node
-      COPY Release/grpc_node.node
-      COPY /home/linux1/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application/node_modules/grpc/src/node/extension_binary/node-v57-linux-s390x-glibc/grpc_node.node
-      TOUCH Release/obj.target/action_after_build.stamp
-    make: Leaving directory '/home/linux1/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application/node_modules/grpc/build'
-    npm WARN nodejs@1.0.0 No description
-    npm WARN nodejs@1.0.0 No repository field.
-    
-    added 323 packages in 90.961s
-    ```
+```
+$ npm install
 
-    
+> pkcs11js@1.0.18 install /home/linux1/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application/node_modules/pkcs11js
+> node-gyp rebuild
 
-13. When the download has finished, if you run `ls` again, you will see a new node_modules folder has been created. It is the node_modules folder that contains the dependencies.
+make: Entering directory '/home/linux1/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application/node_modules/pkcs11js/build'
+  CXX(target) Release/obj.target/pkcs11/src/main.o
+  CXX(target) Release/obj.target/pkcs11/src/dl.o
+  CXX(target) Release/obj.target/pkcs11/src/const.o
+  .
+  .
+  .
+  . (output not shown)
+  .
+  .
+  CXX(target) Release/obj.target/grpc_node/ext/byte_buffer.o
+  CXX(target) Release/obj.target/grpc_node/ext/call.o
+  CXX(target) Release/obj.target/grpc_node/ext/call_credentials.o
+  CXX(target) Release/obj.target/grpc_node/ext/channel.o
+  CXX(target) Release/obj.target/grpc_node/ext/channel_credentials.o
+  CXX(target) Release/obj.target/grpc_node/ext/completion_queue.o
+  CXX(target) Release/obj.target/grpc_node/ext/node_grpc.o
+  CXX(target) Release/obj.target/grpc_node/ext/server.o
+  CXX(target) Release/obj.target/grpc_node/ext/server_credentials.o
+  CXX(target) Release/obj.target/grpc_node/ext/slice.o
+  CXX(target) Release/obj.target/grpc_node/ext/timeval.o
+  SOLINK_MODULE(target) Release/obj.target/grpc_node.node
+  COPY Release/grpc_node.node
+  COPY /home/linux1/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application/node_modules/grpc/src/node/extension_binary/node-v57-linux-s390x-glibc/grpc_node.node
+  TOUCH Release/obj.target/action_after_build.stamp
+make: Leaving directory '/home/linux1/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/magnetocorp/application/node_modules/grpc/build'
+npm WARN nodejs@1.0.0 No description
+npm WARN nodejs@1.0.0 No repository field.
 
-    ```
-    $ ls
-    addToWallet.js  issue.js  node_modules  package.json  package-lock.json
-    ```
+added 323 packages in 90.961s
+```
 
-    
 
-14. Now we are almost ready to issue a new commercial paper, we just need to load Isabella’s digital certificate into the wallet before we can use it.  To do this we run the following application:
-     `node addToWallet.js`
 
-    <u>Note:</u> addToWallet.js simply copies an identity from the basic-network to our wallet location for use by other applications.
+25. When the download has finished, if you run `ls` again, you will see a new node_modules folder has been created. It is the node_modules folder that contains the dependencies.
 
-15. Run this command to see the contents of the newly created wallet:
+```
+$ ls
+addToWallet.js  issue.js  node_modules  package.json  package-lock.json
+```
+
+
+
+26. Now we are almost ready to issue a new commercial paper, we just need to load Isabella’s digital certificate into the wallet before we can use it.  To do this we run the following application:
+    `node addToWallet.js`
+
+<u>Note:</u> addToWallet.js simply copies an identity from the basic-network to our wallet location for use by other applications.
+
+27. Run this command to see the contents of the newly created wallet:
     `ls -al ../identity/user/isabella/wallet/`
 
 ```
@@ -414,7 +453,7 @@ drwxr-xr-x 2 linux1 users 4096 Feb 18 20:03 User1@org1.example.com
 
 Now you can see the User1@org1.example.com folder which is used by the issue application. 
 
-16. We can run another command to see the three files that make up the identity itself:
+28. We can run another command to see the three files that make up the identity itself:
     `ls -al ../identity/user/isabella/wallet/User1@org1.example.com`
 
 ```
@@ -431,7 +470,7 @@ drwxr-xr-x 3 linux1 users 4096 Feb 18 20:03 ..
 
 These files consist of a private key for signing transactions, a public key linked to the private key and a file that contains both metadata and a certificate for our user.
 
-17. Now we can *finally* issue the commercial paper by running:
+29. Now we can *finally* issue the commercial paper by running:
 
 `node issue.js`
 
@@ -460,7 +499,7 @@ We will now begin working in PaperNet as DigiBank.
 
 Now that we have issued paper 00001, we want to take on the persona of an employee of DigiBank who is going to buy and redeem this paper. If we look at the diagram, we can see how they will interact with the same network:
 
-![DigiBank and MagnetoCorp interacting in a network.](/Users/jenn/MaristBlockchainHackathon/img/papernet_magnetodigi.png)
+![DigiBank and MagnetoCorp interacting in a network.](img/papernet_magnetodigi.png)
 
 ### Steps
 
@@ -482,10 +521,7 @@ $ ls
 addToWallet.js  buy.js  package-lock.json  package.json  redeem.js
 ```
 
-We can see this is similar to MagnetoCorp’s application folder, but this time we have three different applications, buy.js, redeem.js and getPaper.js instead of issue.js.
 
-<u>Note:</u> getPaper.js is added as part of this lab, and it is not part of the original Commercial Paper tutorial. 
-The contents of this file are shown in the appendix to this lab guide.
 
 4. As before, before we can run anything, we need to download the dependencies from npm:
    `npm install`
@@ -571,18 +607,308 @@ Now Balaji from DigiBank would like to buy the commercial paper 00001. However, 
 
    [Download VSCode](https://code.visualstudio.com/download)
 
-2. Open VSCode. From the "Welcome" screen, select **New File**.
+9. Open VSCode. From the "Welcome" screen, select **Open folder**.
 
-   ![Select New File.](/Users/jenn/MaristBlockchainHackathon/img/NewFile.png)
+   ![Select New File.](img/NewFile.png)
 
-3. 
+10. In the file browser dialog, navigate to **.../fabric-samples/commercial-paper/organization/magentocorp/contract. Select **Add**.
+
+   ![Navigate to the folder and select Add.](img/libworkspace.png)
+
+11. Click **Don't save** on the pop-up prompt about making the folder a workspace.
+
+    ![Click Don't save.](img/dontsave.png)
+
+12. Click on the **papercontract.js** file in the contract folder to open it for editing:
+
+    ![Click on papercontract.js](img/papercontract.png)
+
+13. We are going to create a new transaction called **getPaper**. It is going to be a simple transaction that just returns the paper that was requested as a parameter. We are going to insert it between the existing **instantiate** and **issue** transactions starting on **line 54**.
+
+Note: It is recommended that you copy in the code and paste at line 54 to avoid any typos.
+
+```
+/**
+* Get commercial paper
+* @param {Context} ctx the transaction context
+* @param {String} issuer commercial paper issuer
+* @param {Integer} paperNumber paper number for this issuer
+*/
+async getPaper(ctx, issuer, paperNumber) {
+  try {
+    console.log('getPaper for: ' + issuer + ' ' + paperNumber);
+    let paperKey = CommercialPaper.makeKey([issuer, paperNumber]);
+    let paper = await ctx.paperList.getPaper(paperKey);
+    return paper;
+  } catch(e) {
+    throw new Error('Paper: ' + paperNumber + 'absentfor' + issuer);
+  }
+}
+```
+
+![Paste the getPaper code.](img/pastegetpaper.png)
 
 
 
-In the same DigiBank terminal, run the buy application:
-`node getPaper.js`
+14. **Save** your code addition in VSCode. You can use CTRL + S (Windows/Linux), CMD + S (Mac) or go to File -> Save. 
 
-ubuntu@qa10:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/digibank/application$ node buy.js 
+15. In VSCode, click on **package.json**. We will edit the **version number** before pushing our changes to GitHub and installing on the network.
+
+    ![Click on package.json](img/jsonpackage.png)
+
+16. Change **Line 2** to say **papercontract** for the name, if needed, and increment the version to **0.0.4**. **Save** your changes.
+![Increment the version.](img/changeversion.png)
+
+17. Now that we've updated the contract for the chaincode, we're going to add a **getPaper.js** application that DigiBank can use from the terminal. To do this, go to ***File*** and ***Open***. Navigate to  **.../fabric-samples/commercial-paper/organization/digibank/application.** Select **Open**.
+
+18. Select ***File*** and ***New file*** to create a new file in the application folder.
+
+19. Copy and paste in the following code:
+
+    ```
+    /*
+    SPDX-License-Identifier: Apache-2.0
+    */
+    /*
+     * This application has 6 basic steps:
+     * 1. Select an identity from a wallet
+     * 2. Connect to network gateway
+     * 3. Access PaperNet network
+     * 4. Construct request to query a commercial paper
+     * 5. Submit transaction
+     * 6. Process response
+     */
+    'use strict';
+    // Bring key classes into scope, most importantly Fabric SDK network class
+    const fs = require('fs');
+    const yaml = require('js-yaml');
+    const { FileSystemWallet, Gateway } = require('fabric-network');
+    const CommercialPaper = require('../contract/lib/paper.js');
+    // A wallet stores a collection of identities for use
+    const wallet = new FileSystemWallet('../identity/user/balaji/wallet');
+    // Main program function
+    async function main() {
+        // A gateway defines the peers used to access Fabric networks
+        const gateway = new Gateway();
+    
+        // Main try/catch block
+        try {
+            // Specify userName for network access
+            // const userName = 'isabella.issuer@magnetocorp.com';
+            const userName = 'Admin@org1.example.com';
+            // Load connection profile; will be used to locate a gateway 
+            let connectionProfile = yaml.safeLoad(fs.readFileSync('../gateway/networkConnection.yaml', 'utf8'));
+            // Set connection options; identity and wallet
+            let connectionOptions = {
+                identity: userName,
+                wallet: wallet,
+                discovery: { enabled:false, asLocalhost: true }
+            };
+    
+            // Connect to gateway using application specified parameters
+            console.log('Connect to Fabric gateway.');
+            await gateway.connect(connectionProfile, connectionOptions);
+    
+            // Access PaperNet network
+            console.log('Use network channel: mychannel.');
+            const network = await gateway.getNetwork('mychannel');
+    
+            // Get addressability to commercial paper contract
+            console.log('Use org.papernet.commercialpaper smart contract.');
+            const contract = await network.getContract('papercontract', 'org.papernet.commercialpaper');
+    
+            // get commercial paper
+            console.log('Submit commercial paper getPaper transaction.');
+            const getPaperResponse = await contract.evaluateTransaction('getPaper', 'MagnetoCorp', '00001');
+    
+            // process response
+            console.log('Process getPaper transaction response.');
+            let paperJSON = JSON.parse(getPaperResponse);
+            let paper = CommercialPaper.createInstance(paperJSON.issuer, paperJSON.paperNumber, paperJSON.issueDateTime, paperJSON.maturityDateTime, paperJSON.faceValue);
+            paper.setOwner(paperJSON.owner);
+            paper.currentState = paperJSON.currentState;
+    
+            // let paper = CommercialPaper.fromBuffer(getPaperResponse);
+            let paperState = 'Unknown';
+            if(paper.isIssued()) {
+                paperState = 'ISSUED';
+            } else if(paper.isTrading()){
+                paperState = 'TRADING';
+            } else if(paper.isRedeemed()){
+                paperState = 'REDEEMED';
+            }
+    
+            console.log(` +--------- Paper Retrieved ---------+ `);
+            console.log(` | Paper number: "${paper.paperNumber}"`);
+            console.log(` | Paper is owned by: "${paper.owner}"`);
+            console.log(` | Paper is currently: "${paperState}"`);
+            console.log(` | Paper face value: "${paper.faceValue}"`);
+            console.log(` | Paper is issued by: "${paper.issuer}"`);
+            console.log(` | Paper issue on: "${paper.issueDateTime}"`);
+            console.log(` | Paper matures on: "${paper.maturityDateTime}"`);
+            console.log(` +-----------------------------------+ `);
+            console.log('Transaction complete.');
+    
+            //console.log('Transaction complete.' + JSON.stringify(paper));
+        } catch (error) {
+            console.log(`Error processing transaction. ${error}`);
+            console.log(error.stack);
+        } finally {
+            // Disconnect from the gateway
+            console.log('Disconnect from Fabric gateway.')
+            gateway.disconnect();
+        }
+    }
+    main().then(() => {
+        console.log('getPaper program complete.');
+    }).catch((e) => {
+        console.log('getPaper program exception.');
+        console.log(e);
+        console.log(e.stack);
+        process.exit(-1);
+    });
+    ```
+
+20. Go to ***File*** and ***Save as***. In the dialog, complete the following:
+
+    * Save as: **getPaper.js**
+    * Where: make sure you're in DigiBank's application folder
+    * Format: **JavaScript**
+    * **Save**
+
+21. Open **GitHub Desktop**. Click ***File*** and ***Add local repository***. We are going to make GitHub Desktop aware of the fabric-samples repository we cloned and have been making changes in.
+
+22. In the file browser window, navigate to where you cloned **fabric-samples** on your laptop and select **Open**.
+
+23. Select **Add Repository**.
+
+    ![Select Add Repository.](img/AddRepository.png)
+
+24. GitHub Desktop will have already detected the changes we've made. To push the changes to the repository, complete the following:
+
+    * Select **Fetch origin**
+    * Add a comment about the changes you've made.
+    * Select **Commit to master**
+
+    ![Commit changes.](img/GitHubDesktop.png)
+
+25. After you've committed your changes, you'll see a new option to **Push origin**. Select it to send the changes to GitHub.
+
+    ![Select Push origin.](img/pushorigin.png)
+
+26. Now we'll need update the code on our LinuxONE guest where the fabric is running. In the terminal connected to LinuxONE:
+
+    Change directory to fabric-samples. `cd ~/git/src/github.com/hyperledger/fabric-samples/`
+
+27. We will run two commands to pick up our changes on LinuxONE.
+
+    * `git fetch` which checks to see the latest code available
+
+    * `git pull`which brings the changed code to LinuxONE
+
+28. Now that we have the code on LinuxONE, use the following command to install the updated contract. 
+
+```
+$ docker exec cliMagnetoCorp peer chaincode install -n papercontract -v 0.0.4 -p /opt/gopath/src/github.com/contract -l node
+
+2020-02-21 19:18:48.802 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 001 Using default escc
+2020-02-21 19:18:48.802 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 002 Using default vscc
+2020-02-21 19:18:48.814 UTC [chaincodeCmd] install -> INFO 003 Installed remotely response:<status:200 payload:"OK" >
+```
+
+29. Now we will instantiate it using the upgrade command. Use the command below to upgrade your contract.
+
+    ```
+    $ docker exec cliMagnetoCorp peer chaincode upgrade -o orderer.example.com:7050 -C mychannel -n papercontract -v 0.0.4 -p /opt/gopath/src/github.com/contract -l node -c '{"Args":["org.papernet.commercialpaper:instantiate"]}' -P "AND ('Org1MSP.member')"
+    
+    2020-02-21 19:19:01.074 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 001 Using default escc
+    2020-02-21 19:19:01.074 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 002 Using default vscc
+    ```
+
+    
+
+30. Check to see the new chaincode running, **docker ps -a**.
+
+
+```
+$ docker ps -a
+3a20b17e078b        dev-peer0.org1.example.com-papercontract-0.0.4-417f4d6119f4e4741045f8101a3e8da03a17e96d568b2bd408cedb3b6f1258e5   "/bin/sh -c 'cd /usr…"   About a minute ago   Up About a minute                                                    dev-peer0.org1.example.com-papercontract-0.0.4
+ca3fb2377da2        dev-peer0.org1.example.com-papercontract-0.0.3-5f1d60e28249e81faa02102ce57e28b86443fdc9c08e350371a8b90ac690ae6e   "/bin/sh -c 'cd /usr…"   2 days ago          Up 2 days                                                            dev-peer0.org1.example.com-papercontract-0.0.3
+9631891b666c        hyperledger/fabric-tools                                                                                          "/bin/bash"              2 days ago          Up 2 days                                                            cliMagnetoCorp
+31aafe485cbf        hyperledger/fabric-peer                                                                                           "peer node start"        2 days ago          Up 2 days           0.0.0.0:7051->7051/tcp, 0.0.0.0:7053->7053/tcp   peer0.org1.example.com
+6fe8b6c8b567        hyperledger/fabric-couchdb                                                                                        "tini -- /docker-ent…"   2 days ago          Up 2 days           4369/tcp, 9100/tcp, 0.0.0.0:5984->5984/tcp       couchdb
+ce099d3ff248        hyperledger/fabric-ca                                                                                             "sh -c 'fabric-ca-se…"   2 days ago          Up 2 days           0.0.0.0:7054->7054/tcp                           ca.example.com
+e23fd6c6cedc        hyperledger/fabric-orderer                                                                                        "orderer"                2 days ago          Up 2 days           0.0.0.0:7050->7050/tcp                           orderer.example.com
+```
+31. Now that the chaincode is installed. We need to install the application for DigiBank to use. 
+`cd ~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/digibank/application`
+
+Now we'll need to install the updated code.
+  
+  `npm install`
+  
+    
+```
+$ cd ~/my-fabric-samples/commercial-paper/organization/digibank/application 
+$ npm install
+> pkcs11js@1.0.18 install /home/linux1/my-fabric-samples/commercial-paper/organization/digibank/application/node_modules/pkcs11js
+> node-gyp rebuild
+
+make: Entering directory '/home/linux1/my-fabric-samples/commercial-paper/organization/digibank/application/node_modules/pkcs11js/build'
+  CXX(target) Release/obj.target/pkcs11/src/main.o
+  CXX(target) Release/obj.target/pkcs11/src/dl.o
+  .
+  .
+  . (output not shown)
+  .
+  CXX(target) Release/obj.target/grpc_node/ext/server_credentials.o
+  CXX(target) Release/obj.target/grpc_node/ext/slice.o
+  CXX(target) Release/obj.target/grpc_node/ext/timeval.o
+  SOLINK_MODULE(target) Release/obj.target/grpc_node.node
+  COPY Release/grpc_node.node
+  COPY /home/linux1/my-fabric-samples/commercial-paper/organization/digibank/application/node_modules/grpc/src/node/extension_binary/node-v57-linux-s390x-glibc/grpc_node.node
+  TOUCH Release/obj.target/action_after_build.stamp
+make: Leaving directory '/home/linux1/my-fabric-samples/commercial-paper/organization/digibank/application/node_modules/grpc/build'
+npm WARN nodejs@1.0.0 No description
+npm WARN nodejs@1.0.0 No repository field.
+
+added 323 packages in 84.427s
+
+```
+
+32. Now that we've updated the code, we need to re-add **Balaji's** credentials. Run the following command:
+    
+    `node addToWallet.js`
+    
+33. In the same  terminal, run the new application. This allows **Balaji** from **DigiBank** to see the commercial paper to decide if he wants it before buying it.
+    `node getPaper.js`
+
+    ```
+    $ node getPaper.js
+    Connect to Fabric gateway.
+    Use network channel: mychannel.
+    Use org.papernet.commercialpaper smart contract.
+    Submit commercial paper getPaper transaction.
+    Process getPaper transaction response.
+     +--------- Paper Retrieved ---------+
+     | Paper number: "00001"
+     | Paper is owned by: "MagnetoCorp"
+     | Paper is currently: "ISSUED"
+     | Paper face value: "5000000"
+     | Paper is issued by: "MagnetoCorp"
+     | Paper issue on: "2020-05-31"
+     | Paper matures on: "2020-11-30"
+     +-----------------------------------+
+    Transaction complete.
+    Disconnect from Fabric gateway.
+    getPaper program complete.
+    ```
+
+34. We can see that the paper **00001** was successfully retrieved and that its state is currently **ISSUED**. **Balaji** is now ready to buy the paper.
+
+To buy the paper, run the command `nody buy.js`
+```    
+$ node buy.js 
 Connect to Fabric gateway.
 Use network channel: mychannel.
 Use org.papernet.commercialpaper smart contract.
@@ -592,14 +918,14 @@ MagnetoCorp commercial paper : 00001 successfully purchased by DigiBank
 Transaction complete.
 Disconnect from Fabric gateway.
 Buy program complete.
-
+```
 As you can see the transaction went through successfully, and paper 0001 is now owned by DigiBank.
 
-28. Next, let’s assume that the maturity date has been reached and DigiBank wants to redeem the paper. Also in the DigiBank terminal, let’s run the redeem application as Balaji:
-   node redeem.js
-   
+34. Next, let’s assume that the maturity date has been reached and DigiBank wants to redeem the paper. In the same terminal, let’s run the redeem application as Balaji:
+    `node redeem.js`
 
-ubuntu@qa10:~/git/src/github.com/hyperledger/fabric-samples/commercial-paper/organization/digibank/application$ node redeem.js 
+```
+$ node redeem.js 
 Connect to Fabric gateway.
 Use network channel: mychannel.
 Use org.papernet.commercialpaper smart contract.
@@ -609,9 +935,19 @@ MagnetoCorp commercial paper : 00001 successfully redeemed with MagnetoCorp
 Transaction complete.
 Disconnect from Fabric gateway.
 Redeem program complete.
-
+```
 Again the transaction has run smoothly, and the paper was redeemed with MagnetoCorp.
 
-* End of the lab *
+**End of the lab**
+
+### Summary
+
+In this lab, you have completed the following:
+
+*  Edited application code and contracts with VSCode and used GitHub to move it to your LinuxONE Server
+* Created wallets for two individuals at two different companies
+* Started up a basic-network that is required for the commercial-paper example
+
+
 
 © 2020 International Business Machines Corporation. No part of this document may be reproduced or transmitted in any form without written permission from IBM.
